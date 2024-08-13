@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.board.mapper.BoardMapper">
+  
+  <!-- 일반 게시판 리스트 -->
+  <select id="list" resultType="org.zerock.board.vo.BoardVO">
+  select no,title,writer,writeDate,hit 
+  	from(
+	  	select rownum rnum,no,title,writer,writeDate,hit
+	  	from (
+	    	SELECT 
+	    	no,title,writer,writeDate,hit 
+	    	FROM board 
+	    	order by no desc
+	    )
+	) where rnum between 1 and 10
+  </select>
+  <!-- 일반 게시판 조회수 증가 -->
+  <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->
+  <update id="inc">
+  	update board set hit=hit+1 where no = #{no}
+  </update>
+  <!-- 일반 게시판 글 보기 -->
+  <select id="view" resultType="org.zerock.board.vo.BoardVO">
+    SELECT no,title,content,writer,writeDate,hit FROM board where no = #{no}
+  </select>
+  <!-- 일반 게시판 글 등록 -->
+  <insert id="write">
+  	insert into board(no,title,content,writer,pw) values(board_seq.nextval,#{title},#{content},#{writer},#{pw})
+  </insert>
+  <!-- 일반 게시판 글 수정 -->
+  <update id="update">
+  	update board set title=#{title},content=#{content},writer=#{writer} where no = #{no} and pw = #{pw}
+  </update>
+  <!-- 일반 게시판 글 삭제 -->
+  <delete id="delete">
+    delete from board where no=#{no} and pw=#{pw}
+  </delete>
+  
+</mapper>

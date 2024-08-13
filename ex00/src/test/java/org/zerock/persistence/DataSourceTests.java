@@ -41,6 +41,7 @@ public class DataSourceTests {
 			log.info("-----------------------------------------------");
 			log.info(session);
 			log.info(con);
+			
 			log.info("2.연결 성공");
 		} catch (Exception e) {
 			e.printStackTrace();

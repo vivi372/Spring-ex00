@@ -14,6 +14,18 @@
 	<logger name="org.zerock">
 		<level value="info" />
 	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.audit">
+		<level value="warn" />
+	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.resultset">
+		<level value="warn" />
+	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.connection">
+		<level value="warn" />
+	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">

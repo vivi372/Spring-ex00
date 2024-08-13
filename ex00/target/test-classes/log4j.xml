@@ -14,6 +14,19 @@
 	<logger name="org.zerock">
 		<level value="info" />
 	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.audit">
+		<level value="warn" />
+	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.resultsettable">
+		<level value="info" />
+	</logger>
+	<!-- Application Loggers -->
+	<logger name="jdbc.connection">
+		<level value="warn" />
+	</logger>
+	
 	
 	<!-- Application Loggers -->
 	<logger name="org.zerock.sample">
