@@ -5,13 +5,17 @@
 <head>
 <meta charset="UTF-8">
 <title>일반게시판 글 수정 폼</title>
-<jsp:include page="../jsp/weblib.jsp"/>
+<%-- <jsp:include page="../jsp/weblib.jsp"/> --%>
 </head>
 <body>
 <div class="container">
 	<h1>일반게시판 글 수정 폼</h1>
 	<form action="/board/update.do" method="post" id="writeForm">
 		<input type="hidden" value="${vo.no }" name="no">
+		<input type="hidden" name="page" value="${param.page}">
+		<input type="hidden" name="perPageNum" value="${param.key}">
+		<input type="hidden" name="key" value="${param.perPageNum}">
+		<input type="hidden" name="word" value="${param.word}">
 		<div class="form-group">
 			<label for="title">제목</label> 
 				<input type="text" class="form-control" placeholder="제목 입력" id="title" name="title" value="${vo.title }">

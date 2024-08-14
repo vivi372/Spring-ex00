@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>일반게시판 상세보기</title>
-<jsp:include page="../jsp/weblib.jsp"/>
+<%-- <jsp:include page="../jsp/weblib.jsp"/> --%>
 <script type="text/javascript">
 $(function() {
 	$('#deleteModal').on('hidden.bs.modal', function () {	
@@ -15,11 +15,11 @@ $(function() {
 	});	
 	
 	$("#listBtn").click(function() {
-		history.back();
+		location = "/board/list.do?page=${param.page}&perPageNum=${param.perPageNum}&key=${param.key}&word=${param.word}";
 	});
 	
 	$("#updateBtn").click(function() {
-		location = "/board/updateForm.do?no="+${vo.no};
+		location = "/board/updateForm.do?no="+${vo.no}+"&page=${param.page}&perPageNum=${param.perPageNum}&key=${param.key}&word=${param.word}";
 	});
 });
 </script>
@@ -72,6 +72,7 @@ $(function() {
 	        		<form action="delete.do" method="post" id="deleteForm" class="form-inline">
 	        			<input id="no" name="no" type="hidden" value="${vo.no }">
 						<input id="pw" name="pw" type="password" placeholder="비밀번호 입력" style="padding: 5px">
+						<input type="hidden" name="perPageNum" value="${param.perPageNum}">
 						<button class="btn btn-secondary">삭제 처리</button>
 					</form>
 	        	</div>

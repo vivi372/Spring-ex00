@@ -4,6 +4,11 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.zerock.board.mapper.BoardMapper">
   
+  <!-- 전체 글수 구하기 -->
+  <select id="totalRow" resultType="long">
+  	select count(*) from board
+  </select>
+  
   <!-- 일반 게시판 리스트 -->
   <select id="list" resultType="org.zerock.board.vo.BoardVO">
   select no,title,writer,writeDate,hit 
@@ -15,7 +20,7 @@
 	    	FROM board 
 	    	order by no desc
 	    )
-	) where rnum between 1 and 10
+	) where rnum between #{startRow} and #{endRow}
   </select>
   <!-- 일반 게시판 조회수 증가 -->
   <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->

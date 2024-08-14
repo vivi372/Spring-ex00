@@ -3,12 +3,18 @@ package org.zerock.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.springframework.format.annotation.DateTimeFormat;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.domain.SampleDTO;
 import org.zerock.domain.TodoDTO;
 
@@ -76,6 +82,52 @@ public class SampleController {
 		
 		// /WEB-INF/views/+ex00+.jsp
 		return "sample/ex02";
+	}
+	
+	//객체 타입 리턴
+	@GetMapping("/ex06")	
+	public @ResponseBody ArrayList<SampleDTO> ex06() {
+		log.info("ex06");
+		ArrayList<SampleDTO> list = new ArrayList<SampleDTO>();
+		SampleDTO dto = new SampleDTO();
+		dto.setAge(10);
+		dto.setName("홍길동");
+		list.add(dto);
+		dto = new SampleDTO();
+		dto.setAge(20);
+		dto.setName("길동");
+		list.add(dto);
+		return list;
+	}
+	
+	//헤더 설정 후 리턴
+	@GetMapping("/ex07")	
+	public ResponseEntity<String> ex07() {
+		log.info("ex07");
+		String msg = "{\"name\":\"홍길동\"}";
+		
+		HttpHeaders header = new HttpHeaders();
+		header.add("Content-Type", "application/json;charset=UTF-8");
+		
+		return new ResponseEntity<String>(msg,header, HttpStatus.OK);
+	}
+	
+	//get 방식 매핑 - 업로드 페이지
+	@GetMapping("/exUpload")
+	public void exUpload() {
+		log.info("/exUpload");
+	}
+	
+	//post 방식 매핑 -  파일 업로드 처리(저장 제외)
+	@PostMapping("/exUploadPost")
+	public void exUploadPost(@RequestParam ArrayList<MultipartFile> files) {
+		log.info("/exUploadPost");
+		
+		files.forEach(file -> {
+			log.info("---------------------------------------");
+			log.info("name:"+file.getOriginalFilename());
+			log.info("size:"+file.getSize());		
+		});
 	}
 	
 }

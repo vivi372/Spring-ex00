@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.zerock.board.mapper.BoardMapper;
 import org.zerock.board.vo.BoardVO;
+
+import com.webjjang.util.page.PageObject;
+
 import lombok.extern.log4j.Log4j;
 
 //자동 생성을 위한 어노테이션
@@ -24,9 +27,10 @@ public class BoardService {
 	@Inject
 	private BoardMapper boardMapper;
 	
-	public List<BoardVO> list() {
+	public List<BoardVO> list(PageObject pageObject) {
 		log.info("list() 실행");
-		return boardMapper.list();		
+		pageObject.setTotalRow(boardMapper.totalRow(pageObject));		
+		return boardMapper.list(pageObject);		
 	}
 	
 	public BoardVO view(long[] longs) {

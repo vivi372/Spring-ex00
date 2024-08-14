@@ -2,13 +2,14 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="pageNav" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>일반 게시판</title>
 
-<jsp:include page="../jsp/weblib.jsp"/>
+<%-- <jsp:include page="../jsp/weblib.jsp"/> --%>
 
 <style type="text/css">
 .dataRow:hover{
@@ -24,7 +25,7 @@
 	$(function() {
 		$(".dataRow").click(function() {
 			let no = $(this).data("no");
-			location = "/board/view.do?no="+no+"&inc=1";
+			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
 		});		
 	});
 </script>
@@ -54,7 +55,10 @@
 			</c:forEach>		
 		</div>
 		<div class="card-footer">
-			<a href="writeForm.do" class="btn btn-dark">게시판 글 등록</a>
+			<div class="pagination justify-content-center">
+				<pageNav:pageNav listURI="list.do" pageObject="${pageObject }"/>
+			</div>
+			<a href="writeForm.do?perPageNum=${pageObject.perPageNum }" class="btn btn-dark">게시판 글 등록</a>
 		</div>
 	</div>		
 </div>

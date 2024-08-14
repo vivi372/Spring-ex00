@@ -1,5 +1,7 @@
 package org.zerock.board.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -7,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.board.service.BoardService;
 import org.zerock.board.vo.BoardVO;
 
+import com.webjjang.util.page.PageObject;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -30,10 +34,14 @@ public class BoardController {
 	//일반 게시판 리스트
 	@GetMapping("/list.do")
 	//public ModelAndView list(Model model) {
-	public String list(Model model) {
-		log.info("list()");
+	public String list(Model model,HttpServletRequest request) throws Exception {
+		log.info("list()");				
+		//페이지 처리를 위한 객체 생성
+		PageObject pageObject = PageObject.getInstance(request);
 		//model에 담으면 자동으로 request에 담긴다. - 차리된 데이터를 Model에 저장
-		model.addAttribute("list", service.list());		
+		model.addAttribute("list", service.list(pageObject));		
+		log.info(pageObject);
+		model.addAttribute("pageObject", pageObject);		
 		return "board/list";
 		
 		//ModelAndView
@@ -59,31 +67,37 @@ public class BoardController {
 	}
 	//일반 게시판 글 등록 처리
 	@PostMapping("/write.do")
-	public String write(BoardVO vo) {
+	public String write(BoardVO vo,int perPageNum,RedirectAttributes rttr) {
 		log.info("write.do - vo:"+vo);
 		service.write(vo);
-		return "redirect:list.do";
+		//처리 결과 출력
+		rttr.addFlashAttribute("msg", "글 등록이 성공적으로 처리되었습니다.");
+		return "redirect:list.do?perPageNum="+perPageNum;
 	}
 	//일반 게시판 수정 폼
 	@GetMapping("/updateForm.do")
 	public String updateForm(long no,Model model) {
 		log.info("updateForm.do");
 		model.addAttribute("vo",service.view(new long[] {no,0}));
+		
 		return "board/updateForm";
 	}
 	//일반 게시판 수정 처리
 	@PostMapping("/update.do")
-	public String update(BoardVO vo) {
+	public String update(BoardVO vo,HttpServletRequest request,RedirectAttributes rttr) throws Exception {
 		log.info("update.do - vo:"+vo);
 		service.update(vo);
-		return "redirect:view.do?no="+vo.getNo()+"&inc=0";
+		PageObject pageObject = PageObject.getInstance(request);
+		rttr.addFlashAttribute("msg", "글 수정이 성공적으로 처리되었습니다.");
+		return "redirect:view.do?no="+vo.getNo()+"&inc=0&"+pageObject.getPageQuery();
 	}
 	//일반 게시판 삭제 처리
 	@PostMapping("/delete.do")
-	public String delete(long no,String pw) {
+	public String delete(long no,String pw,int perPageNum,RedirectAttributes rttr) {
 		log.info("delete.do"+no+pw);
 		service.delete(no,pw);
-		return "redirect:list.do";
+		rttr.addFlashAttribute("msg", no+"번 글 삭제가 성공적으로 처리되었습니다.");
+		return "redirect:list.do?perPageNum="+perPageNum;
 	}
 	
 }
