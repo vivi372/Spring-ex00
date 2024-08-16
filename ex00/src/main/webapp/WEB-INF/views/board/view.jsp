@@ -21,6 +21,11 @@ $(function() {
 	$("#updateBtn").click(function() {
 		location = "/board/updateForm.do?no="+${vo.no}+"&page=${param.page}&perPageNum=${param.perPageNum}&key=${param.key}&word=${param.word}";
 	});
+	
+	if(${!empty reDelete}) {
+		alert("비밀번호가 달라 삭제에 실패했습니다. 다시 입력해주세요.");
+		$("#deleteModal").modal("show");
+	}
 });
 </script>
 
@@ -70,9 +75,12 @@ $(function() {
 	        	<!-- Modal body -->
 	        	<div class="modal-body">
 	        		<form action="delete.do" method="post" id="deleteForm" class="form-inline">
+	        			<input type="hidden" name="page" value="${param.page}">
+						<input type="hidden" name="perPageNum" value="${param.key}">
+						<input type="hidden" name="key" value="${param.perPageNum}">
+						<input type="hidden" name="word" value="${param.word}">
 	        			<input id="no" name="no" type="hidden" value="${vo.no }">
-						<input id="pw" name="pw" type="password" placeholder="비밀번호 입력" style="padding: 5px">
-						<input type="hidden" name="perPageNum" value="${param.perPageNum}">
+						<input id="pw" name="pw" type="password" placeholder="비밀번호 입력" style="padding: 5px">						
 						<button class="btn btn-secondary">삭제 처리</button>
 					</form>
 	        	</div>

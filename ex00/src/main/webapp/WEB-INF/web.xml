@@ -63,6 +63,15 @@
 		<filter-name>sitemesh</filter-name>	
 		<url-pattern>*.do</url-pattern>	
 	</filter-mapping>
-
+	
+	<!-- JSP가 없는 경우의 처리. 실제적 404 처리는 CommonExceptionAdvice에서 처리 -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error/nomodule404.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error/nomodule500.jsp</location>
+	</error-page>
 
 </web-app>

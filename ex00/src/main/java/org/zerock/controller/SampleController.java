@@ -61,7 +61,7 @@ public class SampleController {
 		log.info("name:"+name);
 		log.info("age:"+age);
 		// /WEB-INF/views/+ex00+.jsp
-		return "sample/ex01";
+		return "sample/ex001";
 	}
 	
 	//파라메터 변수로 받기 - 아이디 여러개를 받아서 처리 - List / 배열

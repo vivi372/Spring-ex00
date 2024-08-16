@@ -11,16 +11,19 @@
   
   <!-- 일반 게시판 리스트 -->
   <select id="list" resultType="org.zerock.board.vo.BoardVO">
+  
   select no,title,writer,writeDate,hit 
   	from(
 	  	select rownum rnum,no,title,writer,writeDate,hit
 	  	from (
 	    	SELECT 
-	    	no,title,writer,writeDate,hit 
+	    	no,title,writer,writeDate,hit
 	    	FROM board 
+	    	
 	    	order by no desc
 	    )
 	) where rnum between #{startRow} and #{endRow}
+	
   </select>
   <!-- 일반 게시판 조회수 증가 -->
   <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->
@@ -33,15 +36,25 @@
   </select>
   <!-- 일반 게시판 글 등록 -->
   <insert id="write">
-  	insert into board(no,title,content,writer,pw) values(board_seq.nextval,#{title},#{content},#{writer},#{pw})
+  	<!-- 먼저 vo의 no의 setter을 이용해서 시퀀스에서 받아온 번호를 세팅해 준다. -->
+  	<selectKey keyProperty="no" order="BEFORE" resultType="Long">
+  		select board_seq.nextval from dual
+  	</selectKey>
+  	
+  	
+  	insert into board(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw})
   </insert>
   <!-- 일반 게시판 글 수정 -->
   <update id="update">
-  	update board set title=#{title},content=#{content},writer=#{writer} where no = #{no} and pw = #{pw}
+  	<![CDATA[
+  		update board set title=#{title},content=#{content},writer=#{writer} where no = #{no} and pw = #{pw}
+  	]]>  	
   </update>
   <!-- 일반 게시판 글 삭제 -->
   <delete id="delete">
-    delete from board where no=#{no} and pw=#{pw}
+  	<![CDATA[
+    	delete from board where no=#{no} and pw=#{pw}
+    ]]>
   </delete>
   
 </mapper>

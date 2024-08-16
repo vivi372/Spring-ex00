@@ -27,12 +27,19 @@
 			let no = $(this).data("no");
 			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
 		});		
+		$("#ajaxBtn").click(function() {
+			$("#rest").load("/sampleRest/getSample", function(data) {
+				console.log(data);
+			});
+		});
 	});
 </script>
 
 </head>
 <body>
 <div class="container">
+	<button id="ajaxBtn">통신</button>
+	<div id="rest"></div>
 	<div class="card">
 		<div class="card-header"><h2>일반 게시판 리스트</h2></div>
 		<div class="card-body">

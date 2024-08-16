@@ -28,7 +28,7 @@ public class BoardController {
 	
 	//자동 DI
 	@Setter(onMethod_ = @Autowired)
-	@Qualifier("boardService")
+	@Qualifier("boardServiceImpl")
 	private BoardService service;
 	
 	//일반 게시판 리스트
@@ -86,18 +86,31 @@ public class BoardController {
 	@PostMapping("/update.do")
 	public String update(BoardVO vo,HttpServletRequest request,RedirectAttributes rttr) throws Exception {
 		log.info("update.do - vo:"+vo);
-		service.update(vo);
+		int result = service.update(vo);
 		PageObject pageObject = PageObject.getInstance(request);
-		rttr.addFlashAttribute("msg", "글 수정이 성공적으로 처리되었습니다.");
-		return "redirect:view.do?no="+vo.getNo()+"&inc=0&"+pageObject.getPageQuery();
+		long no = vo.getNo();
+		if(result > 0) {
+			rttr.addFlashAttribute("msg", no+"번 글 수정이 성공적으로 처리되었습니다.");
+			return "redirect:view.do?no="+no+"&inc=0&"+pageObject.getPageQuery();			
+		} else {
+			rttr.addFlashAttribute("msg", "비밀번호 달라 수정이 실패했습니다. 다시 입력해주세요");
+			return "redirect:updateForm.do?no="+no+"&"+pageObject.getPageQuery();	
+		}
 	}
 	//일반 게시판 삭제 처리
 	@PostMapping("/delete.do")
-	public String delete(long no,String pw,int perPageNum,RedirectAttributes rttr) {
+	public String delete(long no,String pw,RedirectAttributes rttr,HttpServletRequest request) throws Exception {
 		log.info("delete.do"+no+pw);
-		service.delete(no,pw);
-		rttr.addFlashAttribute("msg", no+"번 글 삭제가 성공적으로 처리되었습니다.");
-		return "redirect:list.do?perPageNum="+perPageNum;
+		int result = service.delete(no,pw);
+		PageObject pageObject = PageObject.getInstance(request);
+		if(result > 0) {
+			rttr.addFlashAttribute("msg", no+"번 글 삭제가 성공적으로 처리되었습니다.");
+			return "redirect:list.do?perPageNum="+pageObject.getPerPageNum();
+		} else {
+			//rttr.addFlashAttribute("msg", "비밀번호 달라 수정이 실패했습니다. 다시 입력해주세요");
+			rttr.addFlashAttribute("reDelete", true);
+			return "redirect:view.do?no="+no+"&inc=0&"+pageObject.getPageQuery();
+		}
 	}
 	
 }

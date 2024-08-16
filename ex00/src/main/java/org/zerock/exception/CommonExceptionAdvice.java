@@ -1,4 +1,4 @@
-package org.zerock.exceotion;
+package org.zerock.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
