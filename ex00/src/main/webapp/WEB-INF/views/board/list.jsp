@@ -27,10 +27,25 @@
 			let no = $(this).data("no");
 			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
 		});		
-		$("#ajaxBtn").click(function() {
-			$("#rest").load("/sampleRest/getSample", function(data) {
+			let str = '{"mno":100,"firstName":"가모라"}';
+			
+			
+			
+			
+		$("#ajaxBtn").click(function() {			
+			$("#rest").load("/sampleRest/getText",function(data) {
 				console.log(data);
-			});
+			});			
+// 			$.ajax({
+// 			    method: "POST",
+// 			    url: "/sampleRest/sample.json",	
+// 			    data: str,			   
+// 			   	contentType: 'application/json',
+// 			    success: function(res) {
+			    	
+// 			       console.log(res);
+// 			    }
+// 			});
 		});
 	});
 </script>

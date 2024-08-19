@@ -10,6 +10,8 @@ import java.util.stream.IntStream;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.domain.SampleVO;
@@ -69,9 +71,17 @@ public class SampleRestController {
 	//--------------------------------------------- request 처리
 	
 	//uri안에 데이터 포함하여 전달
-	@GetMapping(value="/getPath/{cat}/{pid}")
+	@GetMapping("/product/{cat}/{pid}")
 	public String[] getPath(@PathVariable("cat") String cat,@PathVariable("pid") Integer pid) {	
 		
 		return new String[] {"category: "+cat,"productid: "+pid};
+	}
+	
+	//js의 JSON 데이터를 만들어서 문자열로 보내면 받을 수 있다.
+	@PostMapping("/sample")
+	public SampleVO convert(@RequestBody SampleVO vo) {
+		log.info(vo);
+		
+		return vo;
 	}
 }
