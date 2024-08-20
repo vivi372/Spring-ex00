@@ -9,32 +9,27 @@ console.log("Board Reply Module....");
 let replyService = {
 	//실행할 함수 선언
 	//일반 게시판 댓글 리스트 처리 함수
-	"list":	function(page) {
+	"list":	function(page, callback, error) {
 		console.log("댓글 리스트 실행");
 		//페이지가 없으면 1로 세팅
 		if(!page) page = 1; 
 		//ajax 형태를 만들어 처리한다. - getJSON()
-		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}&perPageNum=15`,function(data){
-			//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
-			console.log(data);
+		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}`,
+			function(data){
+				//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
+				console.log(data);
+				//callback이 있으면 실행 -> html를 만들어 출력
+				if(callback) callback(data);
 				
-			let list = `<ul class="list-group mt-3">`;
-			
-			$(data.list).each(function(i){
-				console.log(this);
-				list += `<li class="list-group-item">
-						
-						<span class="float-right">
-							${this.writeDate }	
-						</span>
-						<span>${this.name}(${this.id})</span><br>
-						<pre>${this.content}</pre>
-					</li>`;
-			});	
-			list += `</ul>`
-			$("#reply").html(list);
-				
-		});			
+			}).fail(function(xhr,status,err){
+				console.log("댓글 리스트 가져오기 오류");
+				console.log("xhr-"+JSON.stringify(xhr));
+				console.log("status-"+status);
+				console.log("err-"+err);
+				//error이 있으면 실행
+				if(error) error();
+				else alert("댓글 데이터를 가져오는 중 오류 발생");
+			});			
 	},	
 	//일반 게시판 댓글 등록 처리 함수	write(댓글객체, 성공함수, 실패 함수)
 	"write": function(reply,callback,error) {

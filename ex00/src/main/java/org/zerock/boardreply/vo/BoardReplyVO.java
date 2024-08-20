@@ -14,6 +14,6 @@ public class BoardReplyVO {
 	private String content;
 	private String id;
 	private String name;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
 	private Date writeDate;
 }

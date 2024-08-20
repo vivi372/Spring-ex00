@@ -11,17 +11,16 @@
 <script type="text/javascript">
 	//일반 게시판 글 번호 전역 변수
 	const no = ${vo.no};
+	//댓글 페이지
+	let replyPage = 1;
 </script>
+
+<script type="text/javascript" src="/js/dateType.js"></script>
 
 <script type="text/javascript" src="/js/boardReply.js"></script>
 
-<script type="text/javascript">	
-	$(function() {
-		let data = replyService.list();
-		console.log(data);
-		
-	});
-</script>
+<script type="text/javascript" src="/js/replyProcess.js"></script>
+
 
 <script type="text/javascript">
 $(function() {
@@ -42,7 +41,7 @@ $(function() {
 		$("#deleteModal").modal("show");
 	}
 	
-	
+	//$("#deleteModal").draggable();
 });
 </script>
 
@@ -52,7 +51,7 @@ $(function() {
 	
 	<div class="card-header"><h2>일반 게시판 글 보기</h2></div>
 	<div class="card-body">
-		<div class="card dataRow" data-no="${vo.no }">
+		<div class="card">
 			<div class="card-header">
 				<span class="float-right">조회수 : ${vo.hit }</span>
 				${vo.no }. ${vo.title }
@@ -76,8 +75,12 @@ $(function() {
 		<button type="button" id="deleteBtn" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal">
   			삭제
 		</button>
-		<div id="reply"></div>
 	</div>	
+	
+	<!-- 글보기 card  끝 -->
+	<div>
+		<jsp:include page="boardreply.jsp"></jsp:include>
+	</div>
 		
 	
 	<!-- The Modal -->
