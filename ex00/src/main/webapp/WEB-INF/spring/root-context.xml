@@ -30,6 +30,7 @@
 	
 	<mybatis-spring:scan base-package="org.zerock.mapper"/>
 	<mybatis-spring:scan base-package="org.zerock.board.mapper"/>
+	<mybatis-spring:scan base-package="org.zerock.boardreply.mapper"/>
 	
 	<context:component-scan base-package="org.zerock" />
 </beans>

@@ -1,4 +1,4 @@
-package org.zerock.board.mapper;
+package org.zerock.boardreply.mapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,54 +19,37 @@ import lombok.extern.log4j.Log4j;
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 //로그 객체 생성 -> lombok : log 이름으로 처리
 @Log4j
-public class BoardMapperTests {
+public class BoardReplyMapperTests {
 	
 	//lombok의 setter를 이용해서 Spring Autowired을 이용한 자동 DI
 	@Setter(onMethod_ = @Autowired)
-	private BoardMapper mapper;	
+	private BoardReplyMapper mapper;	
 	
 	// list() test
 	@Test
 	public void testList() {
-		log.info("[일반 게시판 리스트(list()) Test]------------------------------------------------------------");
+		log.info("[일반 게시판 댓글 리스트(list()) Test]------------------------------------------------------------");
 		//필요한 데이터 생성(파라메터로 넘겨지는 데이터)는 하드 코딩
 		//pageObject 생성
 		PageObject pageObject = new PageObject();
 		
-		log.info(mapper.list(pageObject));
+		long no = 391;
+		log.info(mapper.list(pageObject,no));
 	}
 	
 	
 	// totalRow() test
 	@Test
 	public void testTotalRow() {
-		log.info("[일반 게시판 리스트(totalRow()) Test]------------------------------------------------------------");
+		log.info("[일반 게시판 댓글 리스트(totalRow()) Test]------------------------------------------------------------");
 		//필요한 데이터 생성(파라메터로 넘겨지는 데이터)는 하드 코딩
 		//pageObject 생성
 		PageObject pageObject = new PageObject();
-		
-		log.info(mapper.totalRow(pageObject));
-	}
-	
-	// inc() test
-	@Test
-	public void testInc() {
-		log.info("[일반 게시판 상세보기(inc()) Test]------------------------------------------------------------");
-		//필요한 데이터 생성(파라메터로 넘겨지는 데이터)는 하드 코딩		
 		long no = 391;
-		
-		log.info(mapper.inc(no));
-	}
+		log.info(mapper.totalRow(pageObject,no));
+	}	
 	
-	// view() test
-	@Test
-	public void testView() {
-		log.info("[일반 게시판 상세보기(view()) Test]------------------------------------------------------------");
-		//필요한 데이터 생성(파라메터로 넘겨지는 데이터)는 하드 코딩		
-		long no = 391;
-		
-		log.info(mapper.view(no));
-	}
+	
 	
 	//write() test
 //	@Test

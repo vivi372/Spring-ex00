@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	let name="홍길동";
+	console.log(name);
+	let fan = function() {
+		console.log("함수 - 웹짱 닷컴");
+	}
+	console.log(fan);//함수 소스 출력
+	fan(); //변수에 저장해 놓은 함수 실행
+	
+	//JSON 처리 - 객체 : 변수와 함수 저장되어 있다.
+	//name 속성 - 초기값을 선언할 때 넣을 수 있다.
+	let varJSON = {"name":"json - 홍길동"};
+	//중간에 속성을 따로 저장수 있다. 속성 이름은 개발자 마음대로 지정할 수 있다.
+	varJSON.age = 30;
+	console.log(varJSON);//객체 출력
+	console.log(JSON.stringify(varJSON));//객체 문자열로 만들어 출력
+	console.log(varJSON.name);//특정 속성 출력
+	
+	//json 객체에 함수 저장
+	//이미 작성된 함수 넣기 - 소스가 반복되어 여러곳에서 사용하게 되면 밖에 함수 선언하고 객체에 넣는다.
+	varJSON.f1 = fan;
+	console.log(varJSON.f1);
+	varJSON.f1();//객체안에 함수를 실행한 결과 출력
+	
+	//JSON 데이터의 리턴 사용하기.
+	let addFunc = function() {
+		console.log("addFunc - start-----------");	
+	}
+	function addFunc1() {
+		console.log("addFunc1 - start-----------");	
+	}
+	//함수 이름으로 소스 출력
+	console.log(addFunc);
+	console.log(addFunc1);
+	//함수 이름뒤에 ()가 있으면 함수 실행
+	addFunc();
+	addFunc1();
+	
+	//replyService는 함수가 모아져 있는 JSON 데이터이다.
+	let replyService = (function() {
+		//실행할 함수 선언
+		function list(page) {
+			console.log("댓글 리스트 실행");
+			console.log(page);
+			
+		}		
+		function write() {
+			console.log("댓글 등록 실행");
+		}
+		function update() {
+			console.log("댓글 수정 실행");
+		}
+		function remove() {
+			console.log("댓글 삭제 실행");
+		}
+		//함수를 실행하면 함수를 모아서 JSON 데이터 리턴		
+		return {
+			"list":list,
+			"write":write,
+			"update":update,
+			"delete":remove,
+		};
+	})();
+	
+	//replyService - JSON, list - 함수코드, list() - 함수 실행
+	console.log(typeof replyService);	
+	replyService.list(10);
+	replyService.delete();
+</script>
+
+</head>
+<body>
+
+</body>
+</html>

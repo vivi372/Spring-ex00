@@ -7,7 +7,22 @@
 <head>
 <meta charset="UTF-8">
 <title>일반게시판 상세보기</title>
-<%-- <jsp:include page="../jsp/weblib.jsp"/> --%>
+
+<script type="text/javascript">
+	//일반 게시판 글 번호 전역 변수
+	const no = ${vo.no};
+</script>
+
+<script type="text/javascript" src="/js/boardReply.js"></script>
+
+<script type="text/javascript">	
+	$(function() {
+		let data = replyService.list();
+		console.log(data);
+		
+	});
+</script>
+
 <script type="text/javascript">
 $(function() {
 	$('#deleteModal').on('hidden.bs.modal', function () {	
@@ -26,6 +41,8 @@ $(function() {
 		alert("비밀번호가 달라 삭제에 실패했습니다. 다시 입력해주세요.");
 		$("#deleteModal").modal("show");
 	}
+	
+	
 });
 </script>
 
@@ -51,6 +68,7 @@ $(function() {
 			</div>
 		</div>
 	</div>
+	
 	<div class="card-footer">
 		<button id="listBtn" class="btn btn-dark">목록</button>
 		<button id="updateBtn" class="btn btn-light">수정</button>
@@ -58,6 +76,7 @@ $(function() {
 		<button type="button" id="deleteBtn" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal">
   			삭제
 		</button>
+		<div id="reply"></div>
 	</div>	
 		
 	
