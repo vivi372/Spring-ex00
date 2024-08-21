@@ -51,7 +51,7 @@ let replyService = {
 				console.log("status-"+status);
 				console.log("err-"+err);
 				//error이 있으면 실행
-				if(error) error();
+				if(error) error(err);
 				else alert("댓글 등록하는 중 오류 발생");
 			}
 		})
@@ -70,13 +70,13 @@ let replyService = {
 				if(callback) callback(data);
 			},
 			error : function(xhr,status,err){
-				console.log("댓글 등록 오류");
+				console.log("댓글 수정 오류");
 				console.log("xhr-"+JSON.stringify(xhr));
 				console.log("status-"+status);
 				console.log("err-"+err);
 				//error이 있으면 실행
-				if(error) error();
-				else alert("댓글 등록하는 중 오류 발생");
+				if(error) error(err);
+				else alert("댓글 수정하는 중 오류 발생");
 			}
 		})
 		

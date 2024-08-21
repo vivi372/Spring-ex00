@@ -69,8 +69,16 @@ public class BoardReplyController {
 		log.info("vo-"+vo);
 		vo.setId(getId(session));//현재는 test만 나온다. 하드코딩 함 로그인 하지 않아도 된다.
 		//로그인이 되어 있어야 사용할 수 있다.
-		service.update(vo);
-		return new ResponseEntity<>("댓글 수정이 되었습니다.",HttpStatus.OK);
+		String result = null;
+		//수정 처리
+		if(service.update(vo) > 0) {
+			result = "댓글 수정이 되었습니다.";
+			return new ResponseEntity<>(result,HttpStatus.OK);
+		} else {
+			result = "아이디가 달라 댓글 수정이 실패되었습니다.";
+			return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	//4.delete - get
 	@GetMapping("/delete.do")

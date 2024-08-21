@@ -15,7 +15,8 @@
 	//댓글 페이지
 	let replyPage = 1;
 	//현재 아이디
-	let id = "test";
+	//let id = ${session.login.id};
+	let id = "test"; // 하드코딩
 </script>
 
 <!-- 2. 날짜 처리 함수 선언 -->

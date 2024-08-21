@@ -3,7 +3,7 @@
 <%@ taglib prefix="pageNav" tagdir="/WEB-INF/tags" %>
 <div class="row my-3">
 	<div class="col-lg-12">		
-		<div class="card">
+		<div class="card replyCard">
 			<!-- 댓글 제목 -->
 			<div class="card-header" style="background: #e0e0e0">
 				<button class="btn btn-sm btn-dark float-right modalBtn" data-toggle="modal" data-target="#replyModal">댓글 등록</button>
@@ -35,8 +35,9 @@
 
       <!-- Modal body -->
       <div class="modal-body">
+      	<span id="modalMsg"></span>
       	<input id="rno" name="rno" type="hidden">
-      	<div class="form-group">
+      	<div class="form-group contentGroup">
     		<label for="content">내용:</label>    
       		<textarea rows="5" cols="" class="form-control" id="content" name="content"></textarea>
   		</div>        
