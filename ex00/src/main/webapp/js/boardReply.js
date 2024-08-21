@@ -17,7 +17,7 @@ let replyService = {
 		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}`,
 			function(data){
 				//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
-				console.log(data);
+				//console.log(data);
 				//callback이 있으면 실행 -> html를 만들어 출력
 				if(callback) callback(data);
 				
@@ -84,5 +84,23 @@ let replyService = {
 	//일반 게시판 댓글 삭제 처리 함수 delete(댓글객체, 성공함수, 실패 함수)
 	"delete": function(reply,callback,error) {
 		console.log("댓글 삭제 실행");
+		$.ajax({
+			type : "get", //데이터 전송 방식
+			url : "/boardreply/delete.do?rno="+reply,			
+			success: function(data,status,err) {
+				console.log(data);
+				//callback이 있으면 실행
+				if(callback) callback(data);
+			},
+			error : function(xhr,status,err){
+				console.log("댓글 삭제 오류");
+				console.log("xhr-"+JSON.stringify(xhr));
+				console.log("status-"+status);
+				console.log("err-"+err);
+				//error이 있으면 실행
+				if(error) error(err);
+				else alert("댓글 삭제하는 중 오류 발생");
+			}
+		})
 	},	
 }

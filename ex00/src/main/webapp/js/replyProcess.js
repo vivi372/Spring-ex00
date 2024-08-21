@@ -137,18 +137,17 @@ $(function(){
 				$msgModal.find("#msg").text(data);
 				$msgModal.modal("show");
 				//등록후 댓글 리스트 새로 출력
-				showList(replyPage);
+				showList(1);
 			});		
 		//댓글 수정일때
 		} else if(modalTitle == "댓글 수정") {
 			//수정에 필요한 데이터 수집
-			let reply = {
-					"no" : no,
-					"rno" : $("#rno").val(),
-					"content" : $("#content").val(),
+			let reply = {				
+				"rno" : $("#rno").val(),
+				"content" : $("#content").val(),
 			};
 			//console.log(reply);
-			replyService.update(reply, function(data){
+			replyService.update(reply, function(data){ //성공 함수
 				//댓글 수정후 모달창 닫기
 				$("#replyModal").modal("hide");
 				//alert(data);
@@ -160,7 +159,25 @@ $(function(){
 				//수정후 댓글 리스트 새로 출력
 				showList(replyPage);
 			});		
+		//댓글 삭제일때
+		} else if(modalTitle == "댓글 삭제") {
+			//삭제에 필요한 데이터 수집
+			let reply = $("#rno").val();
+			//console.log(reply);
+			replyService.delete(reply, function(data){
+				//댓글 삭제후 모달창 닫기
+				$("#replyModal").modal("hide");
+				//alert(data);
+				//사용자에게 알림을 위해 디폴트 데코레이터에 있는 msgModal사용
+				let $msgModal = $("#msgModal");
+				//서버에서 보낸 문자열 모달에 출력
+				$msgModal.find("#msg").text(data);
+				$msgModal.modal("show");
+				//삭제후 댓글 리스트 새로 출력
+				showList(1);
+			});		
 		}
+		
 	});
 });
  

@@ -81,9 +81,20 @@ public class BoardReplyController {
 		
 	}
 	//4.delete - get
-	@GetMapping("/delete.do")
-	public int delete(BoardReplyVO vo) {
-		return 0;
+	@GetMapping(value = "/delete.do", produces = "text/plain;charset=UTF-8")
+	public ResponseEntity<String> delete(BoardReplyVO vo,HttpSession session) {
+		log.info("vo-"+vo);
+		vo.setId(getId(session));//현재는 test만 나온다. 하드코딩 함 로그인 하지 않아도 된다.
+		//로그인이 되어 있어야 사용할 수 있다.
+		String result = null;
+		//삭제 처리
+		if(service.delete(vo) > 0) {
+			result = "댓글 삭제가 되었습니다.";
+			return new ResponseEntity<>(result,HttpStatus.OK);
+		} else {
+			result = "아이디가 달라 댓글 삭제가 실패되었습니다.";
+			return new ResponseEntity<>(result,HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	private String getId(HttpSession session) {
