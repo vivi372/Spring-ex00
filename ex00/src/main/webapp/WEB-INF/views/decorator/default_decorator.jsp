@@ -210,7 +210,7 @@
 		<p>이 홈페이지의 저작권은 이영환에게 있습니다.</p>
 	</footer>
 	
-	<c:if test="${ !empty msg }">
+	
 		<!-- msg를 표시할 모달 창 -->
 		<!-- The Modal -->
 	  	<div class="modal fade" id="msgModal">
@@ -225,7 +225,7 @@
 	        
 	        		<!-- Modal body -->
 	        		<div class="modal-body">
-	          			${msg }
+	          			<span id="msg">${msg }</span>
 	        		</div>
 	        
 	        		<!-- Modal footer -->
@@ -236,12 +236,13 @@
 	      		</div>
 	    	</div>
 	  	</div>
-		<!-- 모달을 보이게 하는 스크립트 -->
-		<script type="text/javascript">
-			$(function() {
-				$("#msgModal").modal("show");
-			});
-		</script>
+	  	<c:if test="${ !empty msg }">
+			<!-- 모달을 보이게 하는 스크립트 -->
+			<script type="text/javascript">
+				$(function() {
+					$("#msgModal").modal("show");
+				});
+			</script>
 	</c:if>
 </body>
 </html>

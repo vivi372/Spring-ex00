@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <title>일반게시판 상세보기</title>
 
+<!-- 1. 필요한 전역 변수 선언 : 직접 코딩 -->
 <script type="text/javascript">
 	//일반 게시판 글 번호 전역 변수
 	const no = ${vo.no};
@@ -15,10 +16,11 @@
 	let replyPage = 1;
 </script>
 
+<!-- 2. 날짜 처리 함수 선언 -->
 <script type="text/javascript" src="/js/dateType.js"></script>
-
+<!-- 3. 댓글 객체(replyService)를 선언  : ajax 처리 포함-->
 <script type="text/javascript" src="/js/boardReply.js"></script>
-
+<!-- 4. reply 호출 처리 함수 선언 + 이벤트 처리 -->
 <script type="text/javascript" src="/js/replyProcess.js"></script>
 
 

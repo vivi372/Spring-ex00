@@ -63,7 +63,10 @@ $(function(){
 		//console.log(reply);
 		replyService.write(reply, function(data){
 			$("#replyModal").modal("hide");
-			alert(data);
+			//alert(data);
+			let $msgModal = $("#msgModal");
+			$msgModal.find("#msg").text(data);
+			$msgModal.modal("show");
 			showList(replyPage);
 		});
 	});
