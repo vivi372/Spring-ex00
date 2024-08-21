@@ -25,11 +25,13 @@
 			//strToday = "2024-08-19";
 			//console.log(strToday);
 			$(list).each(function(i){
-				//console.log(this);			
+				//console.log(this);		
+					
 				let writeDateSplit = this.writeDate.split(" ");
 				let writeDate;			
 				if(writeDateSplit[0]==strToday) writeDate = writeDateSplit[1];
 				else writeDate = writeDateSplit[0];
+				
 				listTag += `<li class="left clearfix" data-rno="${this.rno}">
 							<div>
 								<div class="header">
@@ -48,5 +50,22 @@
  
  //일반 게시판 글보기가 처음에 보여질때 댓글 리스트 보이기 실행 
  showList(replyPage);
- 	
+ 
+//HTML이 로딩이 된 상태에서 실행	
+$(function(){
+	
+	//이벤트 처리
+	$("#replyWriteBtn").click(function() {
+		let reply = {
+				"no" : no,
+				"content" : $("#content").val(),
+		};
+		//console.log(reply);
+		replyService.write(reply, function(data){
+			$("#replyModal").modal("hide");
+			alert(data);
+			showList(replyPage);
+		});
+	});
+});
  

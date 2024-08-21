@@ -24,8 +24,9 @@
 
 <script type="text/javascript">
 $(function() {
-	$('#deleteModal').on('hidden.bs.modal', function () {	
+	$('#deleteModal,#replyModal').on('hidden.bs.modal', function () {	
 		$("#pw").val("");	
+		$("#content").val("");	
 	});	
 	
 	$("#listBtn").click(function() {
@@ -41,7 +42,8 @@ $(function() {
 		$("#deleteModal").modal("show");
 	}
 	
-	//$("#deleteModal").draggable();
+	
+	//$("#replyModal").draggable();
 });
 </script>
 

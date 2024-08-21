@@ -6,6 +6,7 @@
 		<div class="card">
 			<!-- 댓글 제목 -->
 			<div class="card-header" style="background: #e0e0e0">
+				<button class="btn btn-sm btn-dark float-right" data-toggle="modal" data-target="#replyModal">댓글 등록</button>
 				<i class="fa fa-comments fa-fw"></i> Reply
 			</div>
 			
@@ -19,4 +20,33 @@
 			
 		</div>
 	</div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="replyModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">댓글 등록</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      	<div class="form-group">
+    		<label for="content">내용:</label>    
+      		<textarea rows="5" cols="" class="form-control" id="content" name="content"></textarea>
+  		</div>        
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" id="replyWriteBtn">등록</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+      </div>
+
+    </div>
+  </div>
 </div>

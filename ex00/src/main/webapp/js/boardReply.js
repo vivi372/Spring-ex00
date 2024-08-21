@@ -34,6 +34,27 @@ let replyService = {
 	//일반 게시판 댓글 등록 처리 함수	write(댓글객체, 성공함수, 실패 함수)
 	"write": function(reply,callback,error) {
 		console.log("댓글 등록 실행");
+		
+		$.ajax({
+			type : "post", //데이터 전송 방식
+			url : "/boardreply/write.do",
+			data : JSON.stringify(reply), //서버에 전송되는 데이터
+			contentType : "application/json;charset=UTF-8",
+			success: function(data,status,err) {
+				console.log(data);
+				//callback이 있으면 실행
+				if(callback) callback(data);
+			},
+			error : function(xhr,status,err){
+				console.log("댓글 등록 오류");
+				console.log("xhr-"+JSON.stringify(xhr));
+				console.log("status-"+status);
+				console.log("err-"+err);
+				//error이 있으면 실행
+				if(error) error();
+				else alert("댓글 등록하는 중 오류 발생");
+			}
+		})
 	},
 	//일반 게시판 댓글 수정 처리 함수 update(댓글객체, 성공함수, 실패 함수)
 	"update": function(reply,callback,error) {

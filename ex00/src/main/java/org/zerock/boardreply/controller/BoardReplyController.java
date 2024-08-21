@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.boardreply.service.BoardReplyService;
@@ -52,7 +53,8 @@ public class BoardReplyController {
 	@PostMapping(value = "/write.do",
 			consumes = "application/json",//not content
 			produces = "text/plain;charset=UTF-8")
-	public ResponseEntity<String> write(BoardReplyVO vo,HttpSession session) {
+	//JSON이나 xml로 받을 경우 @RequestBody 필수
+	public ResponseEntity<String> write(@RequestBody BoardReplyVO vo,HttpSession session) {
 		log.info("vo-"+vo);
 		vo.setId(getId(session));//현재는 test만 나온다. 하드코딩 함 로그인 하지 않아도 된다.
 		//로그인이 되어 있어야 사용할 수 있다.
