@@ -14,6 +14,8 @@
 	const no = ${vo.no};
 	//댓글 페이지
 	let replyPage = 1;
+	//현재 아이디
+	let id = "test";
 </script>
 
 <!-- 2. 날짜 처리 함수 선언 -->

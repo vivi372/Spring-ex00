@@ -34,7 +34,7 @@
   <!-- 일반 게시판 댓글 수정: 본인 댓글만 -->
   <update id="update">
   	<![CDATA[
-  		update Board_Reply set content=#{title} where rno = #{rno} and id = #{id}
+  		update Board_Reply set content=#{content} where rno = #{rno} and id = #{id}
   	]]>  	
   </update>
   <!-- 일반 게시판 댓글 삭제: 본인 댓글만 -->

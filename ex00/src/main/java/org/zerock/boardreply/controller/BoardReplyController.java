@@ -62,9 +62,15 @@ public class BoardReplyController {
 		return new ResponseEntity<>("댓글 등록이 되었습니다.",HttpStatus.OK);
 	}
 	//3.update - post
-	@PostMapping("/update.do")
-	public int update(BoardReplyVO vo) {
-		return 0;
+	@PostMapping(value = "/update.do",
+			consumes = "application/json",//not content
+			produces = "text/plain;charset=UTF-8")
+	public ResponseEntity<String> update(@RequestBody BoardReplyVO vo,HttpSession session) {
+		log.info("vo-"+vo);
+		vo.setId(getId(session));//현재는 test만 나온다. 하드코딩 함 로그인 하지 않아도 된다.
+		//로그인이 되어 있어야 사용할 수 있다.
+		service.update(vo);
+		return new ResponseEntity<>("댓글 수정이 되었습니다.",HttpStatus.OK);
 	}
 	//4.delete - get
 	@GetMapping("/delete.do")

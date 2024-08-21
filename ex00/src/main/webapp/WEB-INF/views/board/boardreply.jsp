@@ -6,7 +6,7 @@
 		<div class="card">
 			<!-- 댓글 제목 -->
 			<div class="card-header" style="background: #e0e0e0">
-				<button class="btn btn-sm btn-dark float-right" data-toggle="modal" data-target="#replyModal">댓글 등록</button>
+				<button class="btn btn-sm btn-dark float-right modalBtn" data-toggle="modal" data-target="#replyModal">댓글 등록</button>
 				<i class="fa fa-comments fa-fw"></i> Reply
 			</div>
 			
@@ -35,6 +35,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
+      	<input id="rno" name="rno" type="hidden">
       	<div class="form-group">
     		<label for="content">내용:</label>    
       		<textarea rows="5" cols="" class="form-control" id="content" name="content"></textarea>
@@ -43,7 +44,7 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark" id="replyWriteBtn">등록</button>
+        <button type="button" class="btn btn-dark" id="replyBtn">등록</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
       </div>
 

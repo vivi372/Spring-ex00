@@ -37,11 +37,13 @@
 								<div class="header">
 									<strong class="primary-text">${this.name}(${this.id})</strong>
 									<small class="pull-right text-muted">${writeDate}</small>
+								</div>`;
+				if(id == this.id)
+					listTag += `<button class="btn btn-sm btn-secondary float-right modalBtn" data-toggle="modal" data-target="#replyModal">댓글 수정</button>`
+				listTag +=	`<p><pre class="replyContent">${this.content}</pre></p>
+									<hr>
 								</div>
-								<p><pre>${this.content}</pre></p>
-								<hr>
-							</div>
-						</li>`;
+							</li>`;
 			});			
 			$(".chat").html(listTag);
 		}
@@ -51,24 +53,59 @@
  //일반 게시판 글보기가 처음에 보여질때 댓글 리스트 보이기 실행 
  showList(replyPage);
  
+ //모달 등장 처리
+$(document).on("click",".modalBtn",function() {
+	let btnText =  $(this).text();
+	//console.log(btnText);
+	$("#replyModal .modal-title").text(btnText);
+	$("#replyModal #replyBtn").text(btnText);
+	if(btnText == "댓글 등록") {
+		$("#replyModal #rno").val("");
+	} else if(btnText == "댓글 수정") {
+		let rno = $(this).closest("li").data("rno");
+		let replyContent = $(this).closest("li").find(".replyContent").text();
+		//console.log("1"+replyContent);
+		$("#replyModal #rno").val(rno);
+		$("#replyModal #content").val(replyContent);
+	}
+});
+ 
 //HTML이 로딩이 된 상태에서 실행	
-$(function(){
-	
-	//이벤트 처리
-	$("#replyWriteBtn").click(function() {
-		let reply = {
-				"no" : no,
-				"content" : $("#content").val(),
-		};
-		//console.log(reply);
-		replyService.write(reply, function(data){
-			$("#replyModal").modal("hide");
-			//alert(data);
-			let $msgModal = $("#msgModal");
-			$msgModal.find("#msg").text(data);
-			$msgModal.modal("show");
-			showList(replyPage);
-		});
+$(function(){	
+	//이벤트 처리	
+	//댓글 등록 버튼 클릭
+	$("#replyBtn").click(function() {
+		let modalTitle = $("#replyModal .modal-title").text();
+		if(modalTitle == "댓글 등록") {
+			let reply = {
+					"no" : no,
+					"content" : $("#content").val(),
+			};
+			//console.log(reply);
+			replyService.write(reply, function(data){
+				$("#replyModal").modal("hide");
+				//alert(data);
+				let $msgModal = $("#msgModal");
+				$msgModal.find("#msg").text(data);
+				$msgModal.modal("show");
+				showList(replyPage);
+			});		
+		} else if(modalTitle == "댓글 수정") {
+			let reply = {
+					"no" : no,
+					"rno" : $("#rno").val(),
+					"content" : $("#content").val(),
+			};
+			console.log(reply);
+			replyService.update(reply, function(data){
+				$("#replyModal").modal("hide");
+				//alert(data);
+				let $msgModal = $("#msgModal");
+				$msgModal.find("#msg").text(data);
+				$msgModal.modal("show");
+				showList(replyPage);
+			});		
+		}
 	});
 });
  
