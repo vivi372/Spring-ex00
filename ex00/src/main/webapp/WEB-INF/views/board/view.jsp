@@ -49,11 +49,12 @@ $(function() {
 	if(${!empty reDelete}) {
 		alert("비밀번호가 달라 삭제에 실패했습니다. 다시 입력해주세요.");
 		$("#deleteModal").modal("show");
-	}
+	}	
 	
 	
 	//$("#replyModal").draggable();
 });
+
 </script>
 
 </head>

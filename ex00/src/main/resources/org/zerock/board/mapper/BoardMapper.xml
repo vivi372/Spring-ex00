@@ -6,7 +6,9 @@
   
   <!-- 전체 글수 구하기 -->
   <select id="totalRow" resultType="long">
-  	select count(*) from board
+  	select count(*) from board 
+  	<!-- 검색을 달아야 한다. -->
+  	<include refid="search"></include>   	
   </select>
   
   <!-- 일반 게시판 리스트 -->
@@ -19,12 +21,31 @@
 	    	SELECT 
 	    	no,title,writer,writeDate,hit
 	    	FROM board 
-	    	
+	    	<!-- 검색을 달아야 한다. -->	 
+	    	<include refid="search"></include>   	
 	    	order by no desc
 	    )
 	) where rnum between #{startRow} and #{endRow}
 	
   </select>
+  <!-- 일반 게시판 리스트의 검색 처리 -->
+  <sql id="search">
+  	<if test="key != null and key != ''.toString()">
+	  	where
+	  	<trim prefixOverrides="or">
+	  		<if test="key.indexOf('t') >= 0">
+	  			or title like '%' || #{word} || '%'
+	  		</if>
+	  		<if test="key.indexOf('c') >= 0">
+	  			or content like '%' || #{word} || '%'
+	  		</if>
+	  		<if test="key.indexOf('w') >= 0">
+	  			or writer like '%' || #{word} || '%'
+	  		</if>
+	  	</trim>
+  	</if>
+  </sql>
+  
   <!-- 일반 게시판 조회수 증가 -->
   <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->
   <update id="inc">

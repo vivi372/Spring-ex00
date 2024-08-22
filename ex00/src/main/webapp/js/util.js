@@ -3,14 +3,13 @@
  * 댓글 페이지네이션	
  *
  */
- 
- 
+
+
+
 function replyPagenation(pageObject,$pageNav) {
-	let pageNav = `
-					<ul class="pagination pagination-sm">
-				`;
+	let pageNav = `<ul class="pagination pagination-sm">`;
 	//disabled 추가 여부 - 이전 페이지가 없으면 disabled로 한다
-	//onclick를 이용해 이벤트 처리를 한다.
+	
 	if(pageObject.startPage == 1) {
 		pageNav += `<li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>`
 	} else {
