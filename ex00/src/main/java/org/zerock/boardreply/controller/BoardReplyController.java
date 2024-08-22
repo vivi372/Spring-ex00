@@ -38,7 +38,7 @@ public class BoardReplyController {
 	public ResponseEntity<Map<String, Object>> list(PageObject pageObject,long no) throws Exception {
 		log.info("list()");
 		log.info("list - page : "+pageObject.getPage()+", no : "+ no);
-		//DB에서 데이터를 가져와서 넘겨준다.
+		//DB에서 데이터를 가져와서 넘겨준다.		
 		List<BoardReplyVO> list = null;		
 		list = service.list(pageObject, no);
 		//PageObject도 넘겨야 한다.

@@ -8,6 +8,9 @@
 <meta charset="UTF-8">
 <title>일반게시판 상세보기</title>
 
+
+</style>
+
 <!-- 1. 필요한 전역 변수 선언 : 직접 코딩 -->
 <script type="text/javascript">
 	//일반 게시판 글 번호 전역 변수
@@ -26,6 +29,7 @@
 <!-- 4. reply 호출 처리 함수 선언 + 이벤트 처리 -->
 <script type="text/javascript" src="/js/replyProcess.js"></script>
 
+<script type="text/javascript" src="/js/util.js"></script>
 
 <script type="text/javascript">
 $(function() {

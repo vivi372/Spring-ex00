@@ -14,7 +14,7 @@ let replyService = {
 		//페이지가 없으면 1로 세팅
 		if(!page) page = 1; 
 		//ajax 형태를 만들어 처리한다. - getJSON()
-		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}`,
+		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}&perPageNum=1`,
 			function(data){
 				//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
 				//console.log(data);

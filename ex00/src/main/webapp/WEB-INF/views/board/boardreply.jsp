@@ -18,6 +18,13 @@
 				</ul>
 			</div>			
 			
+			<div class="card-footer">
+				<div class="pagination justify-content-center pageNav">
+					
+				</div>
+			
+			</div>
+			
 		</div>
 	</div>
 </div>

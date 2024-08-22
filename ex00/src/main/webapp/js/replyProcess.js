@@ -55,6 +55,17 @@
 			});	
 			//		$(".chat")안에 태그로 치환
 			$(".chat").html(listTag);
+			
+			
+			
+			//페이지네이션 생성
+			//페이지 오브젝트 꺼내기
+			let pageObject = data.pageObject;
+			//서버에서 넘어온 페이지 정보를 전역 변수 replyPage에 입력
+			replyPage = pageObject.page;
+			//util에 존재하는 페이지네이션 생성하는 replyPagenation함수 실행
+			replyPagenation(pageObject,".pageNav");
+				
 		}
 	 );
  };
@@ -63,9 +74,15 @@
  showList(replyPage);
  
  
- 
+
 //HTML이 로딩이 된 상태에서 실행	
 $(function(){	
+	
+	//페이지네이션 클릭 처리
+	$(".pageNav").on("click",".page-link", function() {
+		showList($(this).data("page"));
+		return false;
+	});
 
 	//모달 등장 처리
 	//모달 등장 버튼 클릭 이벤트
