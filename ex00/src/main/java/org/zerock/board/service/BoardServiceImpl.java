@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.zerock.board.mapper.BoardMapper;
 import org.zerock.board.vo.BoardVO;
 
@@ -28,33 +29,32 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper boardMapper;
 	
 	@Override
-	public List<BoardVO> list(PageObject pageObject) {
-		log.info("list() 실행");
+	public List<BoardVO> list(PageObject pageObject) {		
 		pageObject.setTotalRow(boardMapper.totalRow(pageObject));		
 		return boardMapper.list(pageObject);		
 	}
 	@Override
-	public BoardVO view(long[] longs) {
-		log.info("view() 실행");
+	public BoardVO view(long[] longs) {		
 		long no = longs[0];
 		if(longs[1] == 1) {
 			boardMapper.inc(no);			
 		}
 		return boardMapper.view(no);
 	}
+	//@Transactional  - insert 2번 성공을 해야 commit 됨. 한개라도 오류가 나면 rollback
+	//@Transactional
 	@Override
 	public int write(BoardVO vo) {
-		log.info("write() 실행");
-		return boardMapper.write(vo);
+		int result = boardMapper.write(vo); //글번호를 시퀀스에서 새로운 번호 사용
+		//boardMapper.writeTx(vo); //위에서 사용한 글번호 재사용 - PK 예외 발생
+		return result;
 	}
 	@Override
-	public int update(BoardVO vo) {
-		log.info("update() 실행");
+	public int update(BoardVO vo) {		
 		return boardMapper.update(vo);
 	}
 	@Override
-	public int delete(long no,String pw) {
-		log.info("delete() 실행");
+	public int delete(long no,String pw) {		
 		return boardMapper.delete(no,pw);
 	}
 	

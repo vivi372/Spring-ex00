@@ -65,6 +65,17 @@
   	
   	insert into board(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw})
   </insert>
+  
+  <!-- 일반 게시판 글 등록 트랙젝셕 테스트 - 같은 no의 데이터를 등록 시도 -->
+<!--   <insert id="writeTx"> 	 -->
+  	<!-- 먼저 vo의 no의 setter을 이용해서 시퀀스에서 받아온 번호를 세팅해 준다. -->
+<!--   	<selectKey keyProperty="no" order="BEFORE" resultType="Long"> -->
+<!--   		select board_seq.nextval from dual -->
+<!--   	</selectKey> -->
+  	
+<!--   	insert into board(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw}) -->
+<!--   </insert> -->
+  
   <!-- 일반 게시판 글 수정 -->
   <update id="update">
   	<![CDATA[

@@ -21,6 +21,8 @@ public interface BoardMapper {
 	public BoardVO view(long no);
 	//일반 게시판 글 등록
 	public Integer write(BoardVO vo);
+	//글 등록 트랜젝션 처리 테스트
+	//public Integer writeTx(BoardVO vo);
 	//일반 게시판 글 수정
 	public Integer update(BoardVO vo);
 	//일반 게시판 글 업데이트
