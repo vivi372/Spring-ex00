@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.board.service.BoardService;
 import org.zerock.board.vo.BoardVO;
-
 import com.webjjang.util.page.PageObject;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -42,6 +41,8 @@ public class BoardController {
 		model.addAttribute("list", service.list(pageObject));		
 		log.info(pageObject);
 		model.addAttribute("pageObject", pageObject);		
+		
+		
 		return "board/list";
 		
 		//ModelAndView

@@ -28,8 +28,7 @@
 			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
 		});	
 			
-		
-			
+					
 		// perPageNum 처리
 		$("#perPageNum").change(function() {
 			//alert("change perPageNum");
@@ -99,9 +98,11 @@
 					<div class="card-header">
 						<span class="float-right">조회수 : ${vo.hit }</span>
 						글번호 : ${vo.no }
+						<span class="badge badge-secondary">${vo.replyCnt }</span>
 					</div>
 					<div class="card-body">
 						<pre>${vo.title }</pre>
+						
 					</div>
 					<div class="card-footer">
 						<span class="float-right">

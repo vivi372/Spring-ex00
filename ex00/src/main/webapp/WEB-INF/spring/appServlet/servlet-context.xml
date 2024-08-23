@@ -27,19 +27,21 @@
 	</beans:bean>
 	
 	<!-- 파일 업로드 객체와 설정 -->	
-	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-	    <!-- 데이터의 인코딩 방식 -->
-	    <beans:property name="defaultEncoding" value="utf-8"/>
-	    <!--전체 업로드 용량 제한 : 1024 * 1024 * 10 * 10 bytes  -->
-	    <beans:property name="maxUploadSize" value="1048575600"/>
-	    <!--파일 한개 업로드 용량 제한 :1024 * 1024 * 2 * 10 bytes -->
-	    <beans:property name="maxUploadSizePerFile" value="20971520"/>
-	    <!-- 큰 용량의 파일이 들어오면 파일로 저장하는 임시 폴더 지정 -->
-	    <beans:property name="uploadTempDir" value="file:/C:/upload/tmp"/>
-	    <!-- 사용하는 최대 메모리 용량 -->
-	    <beans:property name="maxInMemorySize" value="10485756"/>
-	</beans:bean>
+<!-- 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 	    데이터의 인코딩 방식 -->
+<!-- 	    <beans:property name="defaultEncoding" value="utf-8"/> -->
+<!-- 	    전체 업로드 용량 제한 : 1024 * 1024 * 10 * 10 bytes  -->
+<!-- 	    <beans:property name="maxUploadSize" value="1048575600"/> -->
+<!-- 	    파일 한개 업로드 용량 제한 :1024 * 1024 * 2 * 10 bytes -->
+<!-- 	    <beans:property name="maxUploadSizePerFile" value="20971520"/> -->
+<!-- 	    큰 용량의 파일이 들어오면 파일로 저장하는 임시 폴더 지정 -->
+<!-- 	    <beans:property name="uploadTempDir" value="file:/C:/upload/tmp"/> -->
+<!-- 	    사용하는 최대 메모리 용량 -->
+<!-- 	    <beans:property name="maxInMemorySize" value="10485756"/> -->
+<!-- 	</beans:bean> -->
 	
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+	</beans:bean>
 	<context:component-scan base-package="org.zerock" />
 	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>

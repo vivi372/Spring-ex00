@@ -3,6 +3,7 @@ package org.zerock.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.domain.SampleDTO;
 import org.zerock.domain.TodoDTO;
+
+import com.webjjang.util.file.FileUtil;
 
 import lombok.extern.log4j.Log4j;
 
@@ -127,6 +130,29 @@ public class SampleController {
 			log.info("---------------------------------------");
 			log.info("name:"+file.getOriginalFilename());
 			log.info("size:"+file.getSize());		
+		});
+	}
+	
+	//post 방식 매핑 -  파일 업로드 처리(저장 제외)
+	@PostMapping("/exUploadPost2")
+	public void exUploadPost2(@RequestParam ArrayList<MultipartFile> files,HttpServletRequest request) {
+		log.info("/exUploadPost2");
+		String path = "/upload/image";
+		log.info(files);
+		files.forEach(file -> {
+			log.info("---------------------------------------");
+			log.info("name:"+file.getOriginalFilename());
+			log.info("size:"+file.getSize());		
+			
+			//file upload
+			
+			try {
+				FileUtil.upload(path, file, request);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();				
+			}
+			
 		});
 	}
 	

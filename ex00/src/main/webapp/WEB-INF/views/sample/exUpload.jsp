@@ -8,22 +8,8 @@
 </head>
 <body>
 
-<form action="/sample/exUploadPost" method="post" enctype="multipart/form-data">
-	<div>
-		<input type="file" name="files">
-	</div>
-	<div>
-		<input type="file" name="files">
-	</div>
-	<div>
-		<input type="file" name="files">
-	</div>
-	<div>
-		<input type="file" name="files">
-	</div>
-	<div>
-		<input type="file" name="files">
-	</div>
+<form action="/sample/exUploadPost2" method="post" enctype="multipart/form-data">
+	<input type="file" name="files" multiple>
 	<button>등록</button>
 
 </form>
