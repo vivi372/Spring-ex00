@@ -28,7 +28,7 @@
 			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
 		});	
 			
-			
+		
 			
 		// perPageNum 처리
 		$("#perPageNum").change(function() {

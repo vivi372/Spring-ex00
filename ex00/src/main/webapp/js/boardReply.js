@@ -5,6 +5,8 @@
 //이곳이 실행이 되는지 확인 할 수 있다.
 console.log("Board Reply Module....");
 
+
+
 //일반 게시판 댓글을 처리하는 객체 선언 - jquery의 ajax 사용 : ajax(),getJSON(),get(),post()
 let replyService = {
 	//실행할 함수 선언
@@ -14,7 +16,7 @@ let replyService = {
 		//페이지가 없으면 1로 세팅
 		if(!page) page = 1; 
 		//ajax 형태를 만들어 처리한다. - getJSON()
-		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}&perPageNum=1`,
+		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}`,
 			function(data){
 				//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
 				//console.log(data);
