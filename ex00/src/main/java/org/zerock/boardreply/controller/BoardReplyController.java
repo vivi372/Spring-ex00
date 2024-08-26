@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.boardreply.service.BoardReplyService;
 import org.zerock.boardreply.vo.BoardReplyVO;
+import org.zerock.member.vo.LoginVO;
 
 import com.webjjang.util.page.PageObject;
 
@@ -98,9 +99,9 @@ public class BoardReplyController {
 	}
 	
 	private String getId(HttpSession session) {
-		//LoginVO vo = (LoginVO)session.getAttribute("login");
-		//String id = vo.getId();
-		return "test";
+		LoginVO vo = (LoginVO)session.getAttribute("login");
+		String id = vo.getId();
+		return id;
 	}
 	
 }
