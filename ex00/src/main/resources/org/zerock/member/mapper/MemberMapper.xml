@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.member.mapper.MemberMapper">
+  
+  <!-- 전체 글수 구하기 -->
+  <select id="totalRow" resultType="long">
+  	select count(*) from member 
+  	<!-- 검색을 달아야 한다. -->
+  	<include refid="search"></include>   	
+  </select>
+  
+  <!-- 회원 관리 리스트 -->
+  <select id="list" resultType="org.zerock.member.vo.MemberVO">
+  
+  select no,title,writer,writeDate,hit,replyCnt
+  	from(
+	  	select rownum rnum,no,title,writer,writeDate,hit,replyCnt
+	  	from (
+	    	SELECT 
+	    	b.no,title,writer,writeDate,hit,(select count(*) from member_reply r where r.no=b.no) replyCnt
+	    	FROM member b 
+	    	<!-- 검색을 달아야 한다. -->	 
+	    	<include refid="search"></include>   	
+	    	order by no desc
+	    )
+	) where rnum between #{startRow} and #{endRow}
+	
+  </select>
+  <!-- 회원 관리 리스트의 검색 처리 -->
+  <sql id="search">
+  	<if test="key != null and key != ''.toString()">
+	  	where
+	  	<trim prefixOverrides="or">
+	  		<if test="key.indexOf('t') >= 0">
+	  			or title like '%' || #{word} || '%'
+	  		</if>
+	  		<if test="key.indexOf('c') >= 0">
+	  			or content like '%' || #{word} || '%'
+	  		</if>
+	  		<if test="key.indexOf('w') >= 0">
+	  			or writer like '%' || #{word} || '%'
+	  		</if>
+	  	</trim>
+  	</if>
+  </sql>
+  
+  
+  <!-- 회원 관리 회원 정보 보기 -->
+  <select id="view" resultType="org.zerock.member.vo.MemberVO">
+    SELECT no,title,content,writer,writeDate,hit FROM member where no = #{no}
+  </select>
+  <!-- 회원 관리 회원 등록 -->
+  <insert id="write">
+  	<!-- 먼저 vo의 no의 setter을 이용해서 시퀀스에서 받아온 번호를 세팅해 준다. -->
+  	<selectKey keyProperty="no" order="BEFORE" resultType="Long">
+  		select member_seq.nextval from dual
+  	</selectKey>
+  	
+  	
+  	insert into member(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw})
+  </insert>
+  
+
+  
+  <!-- 회원 관리 회원 수정 -->
+  <update id="update">
+  	<![CDATA[
+  		update member set title=#{title},content=#{content},writer=#{writer} where no = #{no} and pw = #{pw}
+  	]]>  	
+  </update>
+  <!-- 회원 관리 탈퇴 -->
+  <delete id="delete">
+  	<![CDATA[
+    	delete from member where no=#{no} and pw=#{pw}
+    ]]>
+  </delete>
+  
+   <!-- 회원 관리 회원 정보 보기 -->
+  <select id="login" resultType="org.zerock.member.vo.LoginVO">
+    SELECT 
+    	m.id,m.name,m.photo,m.newMsgCnt,m.gradeNo,g.gradeName 
+    	FROM member m,grade g 
+    	where id = #{id} and pw = #{pw}
+    	and m.gradeNo = g.gradeNo
+  </select>
+  
+</mapper>

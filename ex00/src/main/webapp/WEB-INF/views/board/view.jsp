@@ -8,8 +8,8 @@
 <meta charset="UTF-8">
 <title>일반게시판 상세보기</title>
 
-
-</style>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
 
 <!-- 1. 필요한 전역 변수 선언 : 직접 코딩 -->
 <script type="text/javascript">
@@ -51,8 +51,10 @@ $(function() {
 		$("#deleteModal").modal("show");
 	}	
 	
+	//모달 잡고 움직이기
+	$("#deleteModal").draggable();
 	
-	//$("#replyModal").draggable();
+	
 });
 
 </script>
@@ -84,7 +86,7 @@ $(function() {
 		<button id="listBtn" class="btn btn-dark">목록</button>
 		<button id="updateBtn" class="btn btn-light">수정</button>
 		<!-- 모달창을 열어서 비밀번호를 입력 받고 삭제 -->
-		<button type="button" id="deleteBtn" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal">
+		<button type="button" id="deleteBtn" class="btn btn-secondary" data-toggle="modal" data-backdrop="static" data-target="#deleteModal">
   			삭제
 		</button>
 	</div>	
@@ -97,8 +99,8 @@ $(function() {
 	
 	<!-- The Modal -->
   	<div class="modal fade" id="deleteModal">
-    	<div class="modal-dialog modal-dialog-centered">
-      		<div class="modal-content">
+    	<div class="modal-dialog modal-dialog-centered modal-xl">
+      		<div class="modal-content"   style="height: 800px;">
       			
 	        	<!-- Modal Header -->
 	       		<div class="modal-header">
