@@ -43,7 +43,9 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 	@Override
 	public int update(CategoryVO vo) {		
-		return categoryMapper.update(vo);
+		if(vo.getCate_code2() == 0)
+			return categoryMapper.updateBig(vo);
+		return categoryMapper.updateMid(vo);
 	}
 	@Override
 	public int delete(long no,String pw) {		

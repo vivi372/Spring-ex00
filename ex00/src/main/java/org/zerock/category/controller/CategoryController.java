@@ -59,29 +59,23 @@ public class CategoryController {
 	
 	//카테고리 등록 처리
 	@PostMapping("/write.do")
-	public String write(CategoryVO vo,int perPageNum,RedirectAttributes rttr) {
+	public String write(CategoryVO vo,RedirectAttributes rttr) {
 		log.info("write.do - vo:"+vo);
 		service.write(vo);
 		//처리 결과 출력
-		rttr.addFlashAttribute("msg", "글 등록이 성공적으로 처리되었습니다.");
-		return "redirect:list.do?perPageNum="+perPageNum;
+		rttr.addFlashAttribute("msg", "카테고리 등록이 성공적으로 처리되었습니다.");
+		return "redirect:list.do?cate_code1="+(vo.getCate_code1()==0?1:vo.getCate_code1());
 	}
 	//카테고리 수정 폼은 입력 항목이 얼마 없어 리스트에 포함
 	
 	//카테고리 수정 처리
 	@PostMapping("/update.do")
-	public String update(CategoryVO vo,HttpServletRequest request,RedirectAttributes rttr) throws Exception {
+	public String update(CategoryVO vo,RedirectAttributes rttr) throws Exception {
 		log.info("update.do - vo:"+vo);
-		int result = service.update(vo);
-		PageObject pageObject = PageObject.getInstance(request);
-		long no = vo.getCate_code1();
-		if(result > 0) {
-			rttr.addFlashAttribute("msg", no+"번 글 수정이 성공적으로 처리되었습니다.");
-			return "redirect:list.do?no="+no+"&inc=0&"+pageObject.getPageQuery();			
-		} else {
-			rttr.addFlashAttribute("msg", "비밀번호 달라 수정이 실패했습니다. 다시 입력해주세요");
-			return "redirect:list.do?no="+no+"&"+pageObject.getPageQuery();	
-		}
+		service.update(vo);
+		//처리 결과 출력
+		rttr.addFlashAttribute("msg", "글 수정이 성공적으로 처리되었습니다.");
+		return "redirect:list.do?cate_code1="+vo.getCate_code1();
 	}
 	//카테고리 삭제 처리
 	@PostMapping("/delete.do")

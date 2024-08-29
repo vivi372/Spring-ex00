@@ -16,8 +16,10 @@ public interface CategoryMapper {
 	public Integer writeBig(CategoryVO vo);
 	//카테고리 중분류 등록
 	public Integer writeMid(CategoryVO vo);
-	//카테고리 수정
-	public Integer update(CategoryVO vo);
+	//카테고리 대분류 수정
+	public Integer updateBig(CategoryVO vo);
+	//카테고리 중분류 수정
+	public Integer updateMid(CategoryVO vo);
 	//카테고리 삭제
 	public Integer delete(@Param("no") long no,@Param("pw") String pw);
 }
