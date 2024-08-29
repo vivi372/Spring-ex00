@@ -32,6 +32,8 @@
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
+	
+	
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
@@ -43,6 +45,7 @@
 	<mybatis-spring:scan base-package="org.zerock.boardreply.mapper"/>
 	<mybatis-spring:scan base-package="org.zerock.notice.mapper"/>
 	<mybatis-spring:scan base-package="org.zerock.member.mapper"/>
+	<mybatis-spring:scan base-package="org.zerock.category.mapper"/>
 	
 	
 	<context:component-scan base-package="org.zerock" />
