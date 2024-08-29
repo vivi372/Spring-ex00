@@ -41,23 +41,19 @@
   
   
   <!-- 카테고리 수정 -->
-  <update id="updateBig">
-  	<![CDATA[
-  		update category set cate_name=#{cate_name} where cate_code1 = #{cate_code1} and cate_code2 = 0
-  	]]>  	
-  </update>
-  
-  <!-- 카테고리 수정 -->
-  <update id="updateMid">
+  <update id="update">
   	<![CDATA[
   		update category set cate_name=#{cate_name} where cate_code1 = #{cate_code1} and cate_code2 = #{cate_code2}
   	]]>  	
   </update>
   <!-- 카테고리 삭제 -->
   <delete id="delete">
-  	<![CDATA[
-    	delete from category where no=#{no} and pw=#{pw}
-    ]]>
+    	delete from category 
+    	where 
+    	cate_code1 = #{cate_code1}
+    	<if test="cate_code2>0">
+    		and cate_code2 = #{cate_code2}
+    	</if>
   </delete>
   
 </mapper>

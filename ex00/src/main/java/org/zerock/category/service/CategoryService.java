@@ -20,7 +20,7 @@ public interface CategoryService {
 	
 	public int update(CategoryVO vo); 
 	
-	public int delete(long no,String pw); 
+	public int delete(CategoryVO vo); 
 	
 	
 	

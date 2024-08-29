@@ -74,23 +74,17 @@ public class CategoryController {
 		log.info("update.do - vo:"+vo);
 		service.update(vo);
 		//처리 결과 출력
-		rttr.addFlashAttribute("msg", "글 수정이 성공적으로 처리되었습니다.");
+		rttr.addFlashAttribute("msg", "카테고리 수정이 성공적으로 처리되었습니다.");
 		return "redirect:list.do?cate_code1="+vo.getCate_code1();
 	}
 	//카테고리 삭제 처리
 	@PostMapping("/delete.do")
-	public String delete(long no,String pw,RedirectAttributes rttr,HttpServletRequest request) throws Exception {
-		log.info("delete.do"+no+pw);
-		int result = service.delete(no,pw);
-		PageObject pageObject = PageObject.getInstance(request);
-		if(result > 0) {
-			rttr.addFlashAttribute("msg", no+"번 글 삭제가 성공적으로 처리되었습니다.");
-			return "redirect:list.do?perPageNum="+pageObject.getPerPageNum();
-		} else {
-			//rttr.addFlashAttribute("msg", "비밀번호 달라 수정이 실패했습니다. 다시 입력해주세요");
-			rttr.addFlashAttribute("reDelete", true);
-			return "redirect:list.do?no="+no+"&inc=0&"+pageObject.getPageQuery();
-		}
+	public String delete(CategoryVO vo,RedirectAttributes rttr) throws Exception {
+		log.info("delete.do"+vo);
+		service.delete(vo);
+		//처리 결과 출력
+		rttr.addFlashAttribute("msg", "카테고리 삭제가 성공적으로 처리되었습니다.");
+		return "redirect:list.do?cate_code1="+(vo.getCate_code2()==0?1:vo.getCate_code1());
 	}
 	
 }
