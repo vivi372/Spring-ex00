@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zerock.goods.mapper.GoodsMapper">
+  
+  <!-- 전체 글수 구하기 -->
+  <select id="totalRow" resultType="long">
+  	select count(*) from goods where 1=1
+  	<!-- 검색을 달아야 한다. -->
+  	<include refid="search"></include>   	
+  </select>
+  
+  <!-- 상품 관리 리스트 -->
+  <select id="list" resultType="org.zerock.goods.vo.GoodsVO">
+  
+  select goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+  	from(
+	  	select rownum rnum,
+	  	goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+	  	from (
+	    	SELECT 
+	    	g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate
+	    	FROM goods g, price p 
+	    	where (<!-- 일반 조건 -->
+	    	<!-- 현재 판매되고 있는 물건 - 가격 정보가 현재 가격으로 존재 -->
+	    	trunc(sysdate) between sale_start_date and sale_end_date
+	    	<!-- 검색을 달아야 한다. -->	 
+	    	<include refid="search"></include>   
+	    	)<!-- 조인 조건 -->
+	    	and (p.goods_no = g.goods_no)	
+	    	order by goods_no desc
+	    )
+	) where rnum between #{startRow} and #{endRow}
+	
+  </select>
+  <!-- 상품 관리 리스트의 검색 처리 -->
+  <sql id="search">
+  	<if test="key != null and key != ''.toString()">
+  		and (
+	  	<trim prefixOverrides="or">
+	  		<if test="key.indexOf('t') >= 0">
+	  			or goods_name like '%' || #{word} || '%'
+	  		</if>
+	  		<if test="key.indexOf('w') >= 0">
+	  			or goods_no like '%' || #{word} || '%'
+	  		</if>
+	  	</trim>
+	  	)
+  	</if>
+  </sql>
+  
+  <!-- 상품 관리 조회수 증가 -->
+  <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->
+  <update id="inc">
+  	update goods set hit=hit+1 where no = #{no}
+  </update>
+  <!-- 상품 관리 글 보기 -->
+  <select id="view" resultType="org.zerock.goods.vo.GoodsVO">
+    SELECT no,title,content,writer,writeDate,hit FROM goods where no = #{no}
+  </select>
+  <!-- 상품 관리 글 등록 -->
+  <insert id="write">
+  	<!-- 먼저 vo의 no의 setter을 이용해서 시퀀스에서 받아온 번호를 세팅해 준다. -->
+  	<selectKey keyProperty="no" order="BEFORE" resultType="Long">
+  		select goods_seq.nextval from dual
+  	</selectKey>
+  	
+  	
+  	insert into goods(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw})
+  </insert>
+  
+  <!-- 상품 관리 수정 -->
+  <update id="update">
+  	<![CDATA[
+  		update goods set title=#{title},content=#{content},writer=#{writer} where no = #{no} and pw = #{pw}
+  	]]>  	
+  </update>
+  <!-- 상품 관리 삭제 -->
+  <delete id="delete">
+  	<![CDATA[
+    	delete from goods where no=#{no} and pw=#{pw}
+    ]]>
+  </delete>
+  
+</mapper>
