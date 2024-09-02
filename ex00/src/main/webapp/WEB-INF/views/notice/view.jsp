@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,13 +46,13 @@
 		</tr>
 		<tr>
 			<th>시작일</th>
-			<td>${vo.startDate }</td>
+			<td><fmt:formatDate value="${vo.startDate}" pattern="yyyy-MM-dd"/></td>
 			<th>종료일</th>
-			<td>${vo.endDate }</td>
+			<td><fmt:formatDate value="${vo.endDate}" pattern="yyyy-MM-dd"/></td>
 			<th>작성일</th>
-			<td>${vo.writeDate }</td>
+			<td><fmt:formatDate value="${vo.writeDate}"  pattern="yyyy-MM-dd"/></td>
 			<th>수정일</th>
-			<td>${vo.updateDate }</td>
+			<td><fmt:formatDate value="${vo.updateDate}"  pattern="yyyy-MM-dd"/></td>
 		</tr>
 		<tr>
 			<th>내용</th>

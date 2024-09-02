@@ -12,4 +12,7 @@ public interface NoticeMapper {
 	
 	public long totalRow(PageObject pageObject);
 	public List<NoticeVO> list(PageObject pageObject);
+	public NoticeVO view(long no);
+	public int write(NoticeVO vo);
+	
 }

@@ -9,5 +9,7 @@ import com.webjjang.util.page.PageObject;
 public interface NoticeService {
 	
 	public List<NoticeVO> list(PageObject pageObject);
+	public NoticeVO view(long no);
+	public int write(NoticeVO vo);
 	
 }

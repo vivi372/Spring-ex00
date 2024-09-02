@@ -23,4 +23,15 @@ public class NoticeServiceImpl implements NoticeService {
 		return mapper.list(pageObject);
 	}
 
+	@Override
+	public NoticeVO view(long no) {
+		return mapper.view(no);
+	}
+
+	@Override
+	public int write(NoticeVO vo) {
+		
+		return mapper.write(vo);
+	}
+
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="pageNav" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html>
@@ -176,9 +177,9 @@
 			<tr class = "dataRow">
 			<td class = "no">${vo.no}</td>
 			<td>${vo.title}</td>
-			<td>${vo.startDate}</td>
-			<td>${vo.endDate}</td>			
-			<td>${vo.updateDate}</td>
+			<td><fmt:formatDate value="${vo.startDate}" pattern="yyyy-MM-dd"/></td>
+			<td><fmt:formatDate value="${vo.endDate}" pattern="yyyy-MM-dd"/></td>	
+			<td><fmt:formatDate value="${vo.updateDate}"  pattern="yyyy-MM-dd"/></td>
 		</tr>
 		</c:forEach>		
 		<c:if test="${!empty login && login.gradeNo==9 }">

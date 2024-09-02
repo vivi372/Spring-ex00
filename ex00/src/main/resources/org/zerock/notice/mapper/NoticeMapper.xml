@@ -6,7 +6,9 @@
   
   <!-- 전체 글수 구하기 -->
   <select id="totalRow" resultType="long">
-  	select count(*) from notice
+  	select count(*) from notice where 1=1 
+  	<include refid="search"></include>
+  	<include refid="period"></include>
   </select>
   
   <!-- 일반 게시판 리스트 -->
@@ -19,12 +21,54 @@
 		    	SELECT 
 		    		no,title,startDate,endDate
 		    	FROM notice 
-		    	
+		    	where 1=1 
+		    	<include refid="search"></include>
+  				<include refid="period"></include>
 		    	order by no desc
 		    )
 		) where rnum between #{startRow} and #{endRow}
 	
   </select>
+  
+  <sql id="search">
+  	<if test="word != null  and word != ''.toString() ">
+  		and (
+  		<trim prefixOverrides="or">
+  			<if test="key.indexOf('t')>=0">
+  				or title like '%' || #{word} || '%'
+  			</if>
+  			<if test="key.indexOf('c')>=0">
+  				or content like '%' || #{word} || '%'
+  			</if>  			
+  		</trim>  	
+  		)
+  	</if>  
+  </sql>
+  
+  <sql id="period">
+  	<if test="period.equals('pre')">
+  		and (trunc(sysdate) between trunc(startDate) and trunc(endDate))
+  	</if>
+  	<if test="period.equals('old')">
+  		<![CDATA[
+  			and trunc(sysdate) > trunc(endDate)
+  		]]> 
+  	</if>
+  	<if test="period.equals('res')">
+  		<![CDATA[
+  			and trunc(sysdate) < trunc(startDate)
+  		]]> 
+  	</if>
+  </sql>
+  
+  <select id="view" resultType="org.zerock.notice.vo.NoticeVO">
+  	select no,title,content,startDate,endDate,writeDate,updateDate from notice where no=#{no}
+  </select>
+  
+  <insert id="write">
+  	insert into notice(no,title,content,startDate,endDate)
+  	values(notice_seq.nextval,#{title},#{content},#{startDate},#{endDate})
+  </insert>
   
   
 </mapper>

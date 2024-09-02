@@ -10,7 +10,7 @@
 <body>
 <div class="container">
 	<h1>일반게시판 글 수정 폼</h1>
-	<form action="/board/update.do" method="post" id="writeForm">
+	<form action="/board/update.do" method="post" id="writeForm" enctype="multipart/form-data">
 		<input type="hidden" value="${vo.no }" name="no">
 		<input type="hidden" name="page" value="${param.page}">
 		<input type="hidden" name="perPageNum" value="${param.key}">
