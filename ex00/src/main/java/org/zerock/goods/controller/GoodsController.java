@@ -1,17 +1,34 @@
 package org.zerock.goods.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.category.service.CategoryService;
+import org.zerock.category.vo.CategoryVO;
 import org.zerock.goods.service.GoodsService;
+import org.zerock.goods.vo.BasicColorVO;
+import org.zerock.goods.vo.BasicSizeVO;
+import org.zerock.goods.vo.GoodsImageVO;
+import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
+
+import com.webjjang.util.file.FileUtil;
 import com.webjjang.util.page.PageObject;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -29,6 +46,9 @@ public class GoodsController {
 	@Setter(onMethod_ = @Autowired)
 	@Qualifier("goodsServiceImpl")
 	private GoodsService service;
+	@Setter(onMethod_ = @Autowired)
+	@Qualifier("categoryServiceImpl")
+	private CategoryService cateService;
 	
 	//상품 관리 리스트
 	@GetMapping("/list.do")
@@ -61,15 +81,68 @@ public class GoodsController {
 	}
 	//상품 관리 글 등록 폼
 	@GetMapping("/writeForm.do")
-	public String writeForm() {
+	public String writeForm(Model model) {
 		log.info("writeForm.do");
+		
+		model.addAttribute("category", cateService.list(0));
 		return "goods/writeForm";
 	}
+	//상품 관리 글 등록 폼 중분류 카테고리,사이즈,컬러 가져오기
+	@GetMapping(value = "/getCateMidSizeColor.do", produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public @ResponseBody Map<String, Object> getCateMidSizeColor(Integer cate_code1) {
+		
+		List<CategoryVO> cateList = cateService.list(cate_code1);
+		List<BasicSizeVO> sizeList = service.getSizeList(cate_code1);
+		List<BasicColorVO> colorList = service.getColorList(cate_code1);
+	
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("cateList", cateList);
+		map.put("sizeList", sizeList);
+		map.put("colorList", colorList);
+		
+		return map;
+	}
+	
 	//상품 관리 글 등록 처리
 	@PostMapping("/write.do")
-	public String write(GoodsVO vo,int perPageNum,RedirectAttributes rttr) {
+	public String write(GoodsVO vo,@RequestParam(required = false) ArrayList<String> option_name,MultipartFile image_name_file,MultipartFile detail_image_name_file,
+			@RequestParam ArrayList<MultipartFile> image_names,int perPageNum,RedirectAttributes rttr,
+			@RequestParam(required = false) ArrayList<Long> size_no,@RequestParam(required = false) ArrayList<Long> color_no,HttpServletRequest request) throws Exception {
 		log.info("write.do - vo:"+vo);
-		service.write(vo);
+		log.info("write.do - option_name:"+option_name);
+		log.info("write.do - iamge_name:"+image_name_file);
+		log.info("write.do - detail_image_name:"+detail_image_name_file);
+		log.info("write.do - image_names:"+image_names);
+		log.info("write.do - size_no:"+size_no);
+		log.info("write.do - color_no:"+color_no);
+		
+		List<GoodsSizeColorVO> sizeColorList = new ArrayList<GoodsSizeColorVO>();
+		
+		for(Long size:size_no) {
+			for(Long color:color_no) {
+				GoodsSizeColorVO sizeColorVO = new GoodsSizeColorVO();
+				sizeColorVO.setSize_no(size);
+				sizeColorVO.setColor_no(color);
+				sizeColorList.add(sizeColorVO);
+			}
+		}
+		log.info("write.do - sizeColorList:"+sizeColorList);
+		String path = "/upload/goods";
+		
+		vo.setImage_name(FileUtil.upload(path, image_name_file, request));
+		vo.setDetail_image_name(FileUtil.upload(path, detail_image_name_file, request));
+		
+		List<GoodsImageVO> imageList = new ArrayList<GoodsImageVO>();
+		
+		for(MultipartFile iamge_name:image_names) {
+			GoodsImageVO imageVO = new GoodsImageVO();
+			imageVO.setImage_name(FileUtil.upload(path, iamge_name, request));
+			imageList.add(imageVO);
+		}
+		
+		service.write(vo, option_name, imageList,sizeColorList);
 		//처리 결과 출력
 		rttr.addFlashAttribute("msg", "글 등록이 성공적으로 처리되었습니다.");
 		return "redirect:list.do?perPageNum="+perPageNum;

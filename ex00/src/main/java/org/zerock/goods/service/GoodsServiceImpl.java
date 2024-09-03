@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.goods.mapper.GoodsMapper;
+import org.zerock.goods.vo.BasicColorVO;
+import org.zerock.goods.vo.BasicSizeVO;
+import org.zerock.goods.vo.GoodsImageVO;
+import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
 
 import com.webjjang.util.page.PageObject;
@@ -42,12 +46,20 @@ public class GoodsServiceImpl implements GoodsService {
 		}
 		return goodsMapper.view(no);
 	}
+	
 	//@Transactional  - insert 2번 성공을 해야 commit 됨. 한개라도 오류가 나면 rollback
 	//상품,가격,이미지,사이즈컬러 -> 등록하다가 하나라도 오류나면 롤백한다.
 	@Override
 	@Transactional
-	public int write(GoodsVO vo) {
-		int result = goodsMapper.write(vo); //글번호를 시퀀스에서 새로운 번호 사용
+	public int write(GoodsVO vo,List<String> option_name,List<GoodsImageVO> imageList,List<GoodsSizeColorVO> sizeColorList) {
+		int result = goodsMapper.goodsWrite(vo); //글번호를 시퀀스에서 새로운 번호 사용
+		goodsMapper.priceWrite(vo);
+		if(sizeColorList != null) {
+			goodsMapper.sizeColorWrite(sizeColorList);
+		} else {
+			goodsMapper.optionWrite(option_name);			
+		}
+		goodsMapper.imageWrite(imageList);
 		//goodsMapper.writeTx(vo); //위에서 사용한 글번호 재사용 - PK 예외 발생
 		return result;
 	}
@@ -58,6 +70,16 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	public int delete(long no,String pw) {		
 		return goodsMapper.delete(no,pw);
+	}
+	@Override
+	public List<BasicSizeVO> getSizeList(Integer cate_code1) {
+		
+		return goodsMapper.getSizeList(cate_code1);
+	}
+	@Override
+	public List<BasicColorVO> getColorList(Integer cate_code1) {
+		
+		return goodsMapper.getColorList(cate_code1);
 	}
 	
 	//삭제할 제품에 대한 이미지를 전부 가져오기 : 상품 이미지 가져오기 -> 상품 삭제	

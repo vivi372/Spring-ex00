@@ -119,7 +119,7 @@
 			      						정가 : <fmt:formatNumber value="${vo.price }"></fmt:formatNumber>원	  
 			      					</div>
 			      					<div>
-			      						판매가 : <fmt:formatNumber value="${vo.sale_price }"></fmt:formatNumber>원
+			      						판매가 : <fmt:formatNumber value="${vo.sale_price }"></fmt:formatNumber>원 
 			      						/ 적립 : ${vo.saved_rate }%
 			      					</div>	  
 			      					
@@ -137,7 +137,9 @@
 			<div class="pagination justify-content-center">
 				<pageNav:pageNav listURI="list.do" pageObject="${pageObject }"/>
 			</div>
-			<a href="writeForm.do?perPageNum=${pageObject.perPageNum }" class="btn btn-dark">게시판 글 등록</a>
+<%-- 			<c:if test="${empty login && login.gradeNo == 9 }"> --%>
+				<a href="writeForm.do?perPageNum=${pageObject.perPageNum }" class="btn btn-dark">상품 등록</a>
+<%-- 			</c:if> --%>
 		</div>
 	</div>		
 </div>

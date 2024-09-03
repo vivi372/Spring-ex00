@@ -29,12 +29,12 @@ public class AuthrityInterceptor extends HandlerInterceptorAdapter {
 		//회원 관리 권한 처리
 		authMap.put("/member/logout.do", 1);
 		//상품 관리
-		authMap.put("/goods/writeForm.do", 9);
-		authMap.put("/goods/write.do", 9);
-		authMap.put("/goods/updateForm.do", 9);
-		authMap.put("/goods/update.do", 9);
-		authMap.put("/goods/delete.do", 9);
-		authMap.put("/goods/changeImage.do", 9);
+//		authMap.put("/goods/writeForm.do", 9);
+//		authMap.put("/goods/write.do", 9);
+//		authMap.put("/goods/updateForm.do", 9);
+//		authMap.put("/goods/update.do", 9);
+//		authMap.put("/goods/delete.do", 9);
+//		authMap.put("/goods/changeImage.do", 9);
 	}
 		
 	

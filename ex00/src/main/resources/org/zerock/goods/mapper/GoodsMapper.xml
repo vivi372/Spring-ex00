@@ -59,15 +59,73 @@
   <select id="view" resultType="org.zerock.goods.vo.GoodsVO">
     SELECT no,title,content,writer,writeDate,hit FROM goods where no = #{no}
   </select>
-  <!-- 상품 관리 글 등록 -->
-  <insert id="write">
-  	<!-- 먼저 vo의 no의 setter을 이용해서 시퀀스에서 받아온 번호를 세팅해 준다. -->
-  	<selectKey keyProperty="no" order="BEFORE" resultType="Long">
-  		select goods_seq.nextval from dual
+  
+  
+  <!-- 상품 관리 상품 등록 -->
+  <insert id="goodsWrite">  	
+  	 insert into goods(goods_no,cate_code1,cate_code2,goods_name,company,product_date,image_name,detail_image_name,content)
+    values(goods_seq.nextval,#{cate_code1},#{cate_code2},#{goods_name},#{company},#{product_date},#{image_name},#{detail_image_name},#{content})
+  </insert>
+  
+   <!-- 상품 관리 상품 가격 등록 -->
+  <insert id="priceWrite">  	
+  	<selectKey keyProperty="goods_no" order="BEFORE" resultType="Long">
+  		select max(goods_no) from goods
   	</selectKey>
-  	
-  	
-  	insert into goods(no,title,content,writer,pw) values(#{no},#{title},#{content},#{writer},#{pw})
+  
+  	insert into price(price_no,goods_no,price,discount,discount_rate,delivery_charge,saved_rate,sale_start_date,sale_end_date)
+    values(price_seq.nextval,#{goods_no},#{price},#{discount,jdbcType=INTEGER},#{discount_rate,jdbcType=INTEGER},#{delivery_charge,jdbcType=INTEGER},#{saved_rate,jdbcType=INTEGER},#{sale_start_date},#{sale_end_date})
+  </insert>
+  
+  <!-- 상품 관리 상품 옵션 등록 -->
+  <insert id="sizeColorWrite">  	
+  	<selectKey keyProperty="goods_no" order="BEFORE" resultType="Long">
+  		select max(goods_no) from goods
+  	</selectKey>
+  
+  	insert into goods_sizecolor(goods_sizecolor_no,goods_no,size_no,color_no)
+  	select goods_sizecolor_seq.nextval,#{goods_no},size_no,color_no
+  		from(
+  			<trim prefixOverrides="union all">
+	  			<foreach collection="list" item="vo">
+	  				union all select #{vo.size_no} size_no,#{vo.color_no} color_no from dual
+	  			</foreach>
+  			</trim>
+  		)   
+  </insert>
+  
+  <!-- 상품 관리 상품 옵션 등록 -->
+  <insert id="optionWrite">  	
+  	<selectKey keyProperty="goods_no" order="BEFORE" resultType="Long">
+  		select max(goods_no) from goods
+  	</selectKey>
+  
+  	insert into goods_option(goods_option_no,goods_no,option_name)
+  	select goods_option_seq.nextval,#{goods_no},option_name
+  		from(
+  			<trim prefixOverrides="union all">
+	  			<foreach collection="list" item="option_name">
+	  				union all select #{option_name} option_name from dual
+	  			</foreach>
+  			</trim>
+  		)   
+  </insert>
+  
+  <!-- 상품 관리 상품 옵션 등록 -->
+  <insert id="imageWrite">  	
+  	<selectKey keyProperty="goods_no" order="BEFORE" resultType="Long">
+  		select max(goods_no) from goods
+  	</selectKey>
+  
+  	insert into goods_image(image_no,goods_no,image_name)
+  	select image_seq.nextval,#{goods_no},image_name
+  		from(
+  			<trim prefixOverrides="union all">
+	  			<foreach collection="list" item="vo">
+	  				union all select #{vo.image_name} image_name from dual
+	  			</foreach>
+  			</trim>
+  		)   
   </insert>
   
   <!-- 상품 관리 수정 -->
@@ -82,5 +140,15 @@
     	delete from goods where no=#{no} and pw=#{pw}
     ]]>
   </delete>
+  
+  <!-- 해당 대분류의 사이즈,컬러 가져오기 -->
+  <select id="getSizeList" resultType="org.zerock.goods.vo.BasicSizeVO">
+  	select size_no,size_name from basic_size where cate_code1 = #{cate_code1}
+  </select>
+  
+   <select id="getColorList" resultType="org.zerock.goods.vo.BasicColorVO">
+  	select color_no,color_name from basic_color where cate_code1 = #{cate_code1}
+  </select>
+  
   
 </mapper>

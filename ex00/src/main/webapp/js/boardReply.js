@@ -19,7 +19,7 @@ let replyService = {
 		$.getJSON(`/boardreply/list.do?no=${no}&page=${page}`,
 			function(data){
 				//데이터 가져오기를 성공하면 시행되는 함수. data는 서버에서 넘겨주는 JSON 데이터
-				//console.log(data);
+				console.log(data);
 				//callback이 있으면 실행 -> html를 만들어 출력
 				if(callback) callback(data);
 				
