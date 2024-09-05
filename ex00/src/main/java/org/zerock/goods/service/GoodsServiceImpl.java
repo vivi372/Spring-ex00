@@ -52,14 +52,20 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	@Transactional
 	public int write(GoodsVO vo,List<String> option_name,List<GoodsImageVO> imageList,List<GoodsSizeColorVO> sizeColorList) {
+		//상품 상세 정보 입력
 		int result = goodsMapper.goodsWrite(vo); //글번호를 시퀀스에서 새로운 번호 사용
+		//상품 가격 정보 입력
 		goodsMapper.priceWrite(vo);
+		//상품 옵션 정보 입력
 		if(sizeColorList != null) {
 			goodsMapper.sizeColorWrite(sizeColorList);
 		} else {
 			goodsMapper.optionWrite(option_name);			
 		}
-		goodsMapper.imageWrite(imageList);
+		//상품 이미지 정보 입력
+		if(imageList != null) {
+			goodsMapper.imageWrite(imageList);			
+		}
 		//goodsMapper.writeTx(vo); //위에서 사용한 글번호 재사용 - PK 예외 발생
 		return result;
 	}

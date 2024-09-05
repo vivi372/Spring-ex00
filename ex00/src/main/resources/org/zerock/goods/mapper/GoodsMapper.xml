@@ -24,7 +24,7 @@
 	    	FROM goods g, price p 
 	    	where (<!-- 일반 조건 -->
 	    	<!-- 현재 판매되고 있는 물건 - 가격 정보가 현재 가격으로 존재 -->
-	    	trunc(sysdate) between sale_start_date and sale_end_date
+	    	trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
 	    	<!-- 검색을 달아야 한다. -->	 
 	    	<include refid="search"></include>   
 	    	)<!-- 조인 조건 -->
@@ -64,7 +64,7 @@
   <!-- 상품 관리 상품 등록 -->
   <insert id="goodsWrite">  	
   	 insert into goods(goods_no,cate_code1,cate_code2,goods_name,company,product_date,image_name,detail_image_name,content)
-    values(goods_seq.nextval,#{cate_code1},#{cate_code2},#{goods_name},#{company},#{product_date},#{image_name},#{detail_image_name},#{content})
+    values(goods_seq.nextval,#{cate_code1},#{cate_code2},#{goods_name},#{company},#{product_date},#{image_name},#{detail_image_name,jdbcType=CHAR},#{content})
   </insert>
   
    <!-- 상품 관리 상품 가격 등록 -->
@@ -74,7 +74,20 @@
   	</selectKey>
   
   	insert into price(price_no,goods_no,price,discount,discount_rate,delivery_charge,saved_rate,sale_start_date,sale_end_date)
-    values(price_seq.nextval,#{goods_no},#{price},#{discount,jdbcType=INTEGER},#{discount_rate,jdbcType=INTEGER},#{delivery_charge,jdbcType=INTEGER},#{saved_rate,jdbcType=INTEGER},#{sale_start_date},#{sale_end_date})
+    values(price_seq.nextval,#{goods_no},#{price},#{discount,jdbcType=INTEGER},#{discount_rate,jdbcType=INTEGER},#{delivery_charge,jdbcType=INTEGER},#{saved_rate,jdbcType=INTEGER},
+   	<if test="sale_start_date == null">
+   		DEFAULT,
+   	</if>
+   	<if test="sale_start_date != null">
+   		#{sale_start_date},   	
+   	</if>
+   	<if test="sale_end_date == null">
+   		DEFAULT
+   	</if>
+   	<if test="sale_end_date != null">
+   		#{sale_end_date}   	
+   	</if>
+    )
   </insert>
   
   <!-- 상품 관리 상품 옵션 등록 -->
@@ -88,7 +101,7 @@
   		from(
   			<trim prefixOverrides="union all">
 	  			<foreach collection="list" item="vo">
-	  				union all select #{vo.size_no} size_no,#{vo.color_no} color_no from dual
+	  				union all select #{vo.size_no,jdbcType=INTEGER} size_no,#{vo.color_no,jdbcType=INTEGER} color_no from dual
 	  			</foreach>
   			</trim>
   		)   

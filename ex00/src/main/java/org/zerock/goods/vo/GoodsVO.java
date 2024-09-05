@@ -28,9 +28,9 @@ public class GoodsVO {
 	private Integer delivery_charge; // 배송비
 	private Integer saved_rate; // 구매시 적립율
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date sale_start_date;
+	private Date sale_start_date; // 값이 안들어오면 null로 ""로 처리해서 기본값으로
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date sale_end_date;
+	private Date sale_end_date; // 값이 안들어오면 null로 ""로 처리해서 기본값으로
 	
 	//판매가 getter 만들기
 	public Integer getSale_price() {

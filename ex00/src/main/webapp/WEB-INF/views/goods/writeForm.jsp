@@ -106,9 +106,7 @@
 					});
 					$(".colorCheckBoxDiv").html(colorCheckBoxsTag);	
 				}
-			});
-			
-			
+			});			
 		});
 		
 		$(".radioOption").click(function() {
@@ -134,6 +132,17 @@
 				$("input[name='size_no'],input[name='color_no']").removeAttr("disabled");
 				
 				
+			}
+		});
+		
+		$("#discount, #discount_rate").keydown(function() {
+			let discountInputName = $(this).attr("name");
+			console.log(discountInputName);
+			
+			if(discountInputName == 'discount') {
+				$("#discount_rate").val("");
+			} else {
+				$("#discount").val("");
 			}
 		});
 		
@@ -183,6 +192,15 @@
 			//태그 삭제
 			$(this).closest(".image_names-div").remove();
 		});
+		
+		$("#writeForm").submit(function() {
+			$("input[name='option_name']").each(function() {
+				if($(this).val()=="") $(this).attr("disabled",true);
+			});
+			
+			
+		});
+		
 		
 		//datepicker 
 		let now = new Date();
@@ -256,10 +274,12 @@
 			<div class="form-row">
 				<div class="form-group col">
 					<label for="image_name">대표 이미지</label> 
+					<!-- vo 객체의 프로퍼티와 다르다. 파일 자체이므로 이름만 저장하고 경로만 서버에 저장 -->
 					<input type="file" class="form-control" id="image_name" required name="image_name_file">
 				</div>
 				<div class="form-group col">
 					<label for="detail_image_name">상세 이미지</label> 
+					<!-- vo 객체의 프로퍼티와 다르다. 파일 자체이므로 이름만 저장하고 경로만 서버에 저장 -->
 					<input type="file" class="form-control" id="detail_image_name" name="detail_image_name_file">
 				</div>		
 			</div>		
@@ -356,6 +376,7 @@
 			<button type="button" id="addImageBtn" class="btn btn-secondary btn-sm mb-3">add Image</button>
 			<div class="form-group image_names-group">
 				<div class="input-group image_names-div mb-2">
+				<!-- vo 객체의 프로퍼티와 다르다. 파일 자체이므로 이름만 저장하고 경로만 서버에 저장 -->
 					<input type="file" class="form-control image_names" name="image_names">
 <!-- 					<div class="input-group-append"> -->
 <!-- 						<button type="button" class="btn btn-secondary btn-sm float-right inputRemove">&times;</button> -->

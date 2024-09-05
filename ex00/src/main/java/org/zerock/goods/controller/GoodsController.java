@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,9 @@ public class GoodsController {
 	@Setter(onMethod_ = @Autowired)
 	@Qualifier("categoryServiceImpl")
 	private CategoryService cateService;
+	
+	//이미지를 저장할 경로
+	String path = "/upload/goods";
 	
 	//상품 관리 리스트
 	@GetMapping("/list.do")
@@ -107,41 +111,78 @@ public class GoodsController {
 	
 	//상품 관리 글 등록 처리
 	@PostMapping("/write.do")
+	//@RequestParam을 사용한 경우 null인 경우 오류가 난다. required = false가 있어야 한다.
 	public String write(GoodsVO vo,@RequestParam(required = false) ArrayList<String> option_name,MultipartFile image_name_file,MultipartFile detail_image_name_file,
 			@RequestParam ArrayList<MultipartFile> image_names,int perPageNum,RedirectAttributes rttr,
 			@RequestParam(required = false) ArrayList<Long> size_no,@RequestParam(required = false) ArrayList<Long> color_no,HttpServletRequest request) throws Exception {
 		log.info("write.do - vo:"+vo);
 		log.info("write.do - option_name:"+option_name);
-		log.info("write.do - iamge_name:"+image_name_file);
-		log.info("write.do - detail_image_name:"+detail_image_name_file);
-		log.info("write.do - image_names:"+image_names);
+		log.info("write.do - iamge_name:"+image_name_file.getOriginalFilename());
+		log.info("write.do - detail_image_name:"+detail_image_name_file.getOriginalFilename());
+		for(MultipartFile image_name:image_names) {
+			log.info("write.do - image_name:"+image_name.getOriginalFilename());			
+		}
+		log.info("write.do - image_names:"+isEmpty(image_names));			
 		log.info("write.do - size_no:"+size_no);
 		log.info("write.do - color_no:"+color_no);
 		
-		List<GoodsSizeColorVO> sizeColorList = new ArrayList<GoodsSizeColorVO>();
 		
-		for(Long size:size_no) {
-			for(Long color:color_no) {
+		//상품 사이즈 컬러 리스트 만들기 컬러 사이즈를 입력 받았을때만 실행
+		List<GoodsSizeColorVO> sizeColorList = null;
+		//사이즈 컬러 둘다 선택한 경우
+		if(size_no != null && color_no != null) {
+			sizeColorList = new ArrayList<GoodsSizeColorVO>();
+			for(Long size:size_no) {				
+				for(Long color:color_no) {
+					GoodsSizeColorVO sizeColorVO = new GoodsSizeColorVO();
+					sizeColorVO.setSize_no(size);
+					sizeColorVO.setColor_no(color);
+					sizeColorList.add(sizeColorVO);					
+				} 
+			}
+			//사이즈만 선택한 경우
+		} else if(size_no != null) {
+			sizeColorList = new ArrayList<GoodsSizeColorVO>();
+			for(Long size:size_no) {
 				GoodsSizeColorVO sizeColorVO = new GoodsSizeColorVO();
 				sizeColorVO.setSize_no(size);
+				sizeColorList.add(sizeColorVO);			
+			}
+			//컬러만 선택한 경우
+		} else if(color_no != null) {
+			sizeColorList = new ArrayList<GoodsSizeColorVO>();
+			for(Long color:color_no) {
+				GoodsSizeColorVO sizeColorVO = new GoodsSizeColorVO();
 				sizeColorVO.setColor_no(color);
-				sizeColorList.add(sizeColorVO);
+				sizeColorList.add(sizeColorVO);			
 			}
 		}
+		
+		
+		
+		
 		log.info("write.do - sizeColorList:"+sizeColorList);
-		String path = "/upload/goods";
-		
+		//서버에 대표이미지,상세 이미지를 업로드후 파일의 경로를 받아 vo에 저장
 		vo.setImage_name(FileUtil.upload(path, image_name_file, request));
-		vo.setDetail_image_name(FileUtil.upload(path, detail_image_name_file, request));
-		
-		List<GoodsImageVO> imageList = new ArrayList<GoodsImageVO>();
-		
-		for(MultipartFile iamge_name:image_names) {
-			GoodsImageVO imageVO = new GoodsImageVO();
-			imageVO.setImage_name(FileUtil.upload(path, iamge_name, request));
-			imageList.add(imageVO);
+		if(detail_image_name_file.getOriginalFilename() != null && !detail_image_name_file.getOriginalFilename().equals("")) {
+			vo.setDetail_image_name(FileUtil.upload(path, detail_image_name_file, request));
 		}
 		
+		//추가 이미지 업로드와 경로 저장하는 리스트 만들기
+		List<GoodsImageVO> imageList = null;
+		if(!isEmpty(image_names)) {
+			imageList = new ArrayList<GoodsImageVO>();
+			for(MultipartFile image_name:image_names) {
+				if(image_name.getOriginalFilename() != null && !image_name.getOriginalFilename().equals("")) {
+					GoodsImageVO imageVO = new GoodsImageVO();				
+					//서버에 추가 이미지들을 업로드후 파일의 경로를 받아 vo에 저장
+					imageVO.setImage_name(FileUtil.upload(path, image_name, request));
+					imageList.add(imageVO);
+				}
+			}
+		}
+		
+		//db에 등록
 		service.write(vo, option_name, imageList,sizeColorList);
 		//처리 결과 출력
 		rttr.addFlashAttribute("msg", "글 등록이 성공적으로 처리되었습니다.");
@@ -184,6 +225,17 @@ public class GoodsController {
 			rttr.addFlashAttribute("reDelete", true);
 			return "redirect:view.do?no="+no+"&inc=0&"+pageObject.getPageQuery();
 		}
+	}
+	
+	private boolean isEmpty(ArrayList<MultipartFile> list) {
+		if(list == null) return true;
+		
+		for(MultipartFile obj : list) {
+			if(obj.getOriginalFilename() == null || obj.getOriginalFilename().equals("")) return true;
+			else return false;
+		}
+		
+		return false;
 	}
 	
 }
