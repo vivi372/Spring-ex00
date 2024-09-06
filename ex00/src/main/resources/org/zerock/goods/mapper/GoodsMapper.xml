@@ -6,47 +6,65 @@
   
   <!-- 전체 글수 구하기 -->
   <select id="totalRow" resultType="long">
-  	select count(*) from goods where 1=1
+  	select count(*) from goods g, price p where 1=1
   	<!-- 검색을 달아야 한다. -->
   	<include refid="search"></include>   	
+  	<include refid="cateSearch"></include>  
+  	<include refid="priceSearch"></include>   	
+  	and (p.goods_no = g.goods_no)	
   </select>
   
   <!-- 상품 관리 리스트 -->
   <select id="list" resultType="org.zerock.goods.vo.GoodsVO">
   
-  select goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+  select cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
   	from(
 	  	select rownum rnum,
-	  	goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+	  	cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
 	  	from (
 	    	SELECT 
-	    	g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate
+	    	g.cate_code1,g.cate_code2,g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate
 	    	FROM goods g, price p 
 	    	where (<!-- 일반 조건 -->
 	    	<!-- 현재 판매되고 있는 물건 - 가격 정보가 현재 가격으로 존재 -->
 	    	trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
 	    	<!-- 검색을 달아야 한다. -->	 
 	    	<include refid="search"></include>   
+	    	<include refid="cateSearch"></include>   
+	    	<include refid="priceSearch"></include>   
 	    	)<!-- 조인 조건 -->
 	    	and (p.goods_no = g.goods_no)	
 	    	order by goods_no desc
 	    )
-	) where rnum between #{startRow} and #{endRow}
+	) where rnum between #{pageObject.startRow} and #{pageObject.endRow}
 	
   </select>
   <!-- 상품 관리 리스트의 검색 처리 -->
-  <sql id="search">
-  	<if test="key != null and key != ''.toString()">
-  		and (
-	  	<trim prefixOverrides="or">
-	  		<if test="key.indexOf('t') >= 0">
-	  			or goods_name like '%' || #{word} || '%'
-	  		</if>
-	  		<if test="key.indexOf('w') >= 0">
-	  			or goods_no like '%' || #{word} || '%'
-	  		</if>
-	  	</trim>
-	  	)
+  <sql id="search">  	
+  	<if test="vo.goods_name != null and vo.goods_name == ''.toString()">
+  		and (goods_name like '%' || #{vo.goods_name} || '%')  	
+  	</if>  	
+  </sql>
+  
+  <sql id="cateSearch">
+  	<if test="vo.cate_code1 != null">
+  		and (cate_code1 = #{vo.cate_code1}) 
+  	</if>
+  	<if test="vo.cate_code2 != null">	
+  		and (cate_code2=#{vo.cate_code2})
+  	</if>
+  </sql>
+  
+  <sql id="priceSearch">  	
+  	<if test="vo.minPrice != null">
+  		<![CDATA[
+  			and (price >= #{vo.minPrice}) 
+  		]]>
+  	</if>
+  	<if test="vo.maxPrice != null">	
+ 		<![CDATA[
+  			and (price <= #{vo.maxPrice})
+  		]]>
   	</if>
   </sql>
   
@@ -62,7 +80,9 @@
   
   
   <!-- 상품 관리 상품 등록 -->
-  <insert id="goodsWrite">  	
+  <insert id="goodsWrite">  
+  	<!-- 지원되는 JDBC 타입 VARCHAR:문자열 INTEGER:숫자 BIGINT:큰 정수 DOUBLE:실수 DATE:날짜 TIMESTAMP: 타임스탬프 BOOLEAN:논리형 -->
+  		
   	 insert into goods(goods_no,cate_code1,cate_code2,goods_name,company,product_date,image_name,detail_image_name,content)
     values(goods_seq.nextval,#{cate_code1},#{cate_code2},#{goods_name},#{company},#{product_date},#{image_name},#{detail_image_name,jdbcType=CHAR},#{content})
   </insert>
@@ -72,7 +92,7 @@
   	<selectKey keyProperty="goods_no" order="BEFORE" resultType="Long">
   		select max(goods_no) from goods
   	</selectKey>
-  
+  	<!-- 지원되는 JDBC 타입 VARCHAR:문자열 INTEGER:숫자 BIGINT:큰 정수 DOUBLE:실수 DATE:날짜 TIMESTAMP: 타임스탬프 BOOLEAN:논리형 -->
   	insert into price(price_no,goods_no,price,discount,discount_rate,delivery_charge,saved_rate,sale_start_date,sale_end_date)
     values(price_seq.nextval,#{goods_no},#{price},#{discount,jdbcType=INTEGER},#{discount_rate,jdbcType=INTEGER},#{delivery_charge,jdbcType=INTEGER},#{saved_rate,jdbcType=INTEGER},
    	<if test="sale_start_date == null">
@@ -98,12 +118,10 @@
   
   	insert into goods_sizecolor(goods_sizecolor_no,goods_no,size_no,color_no)
   	select goods_sizecolor_seq.nextval,#{goods_no},size_no,color_no
-  		from(
-  			<trim prefixOverrides="union all">
-	  			<foreach collection="list" item="vo">
-	  				union all select #{vo.size_no,jdbcType=INTEGER} size_no,#{vo.color_no,jdbcType=INTEGER} color_no from dual
-	  			</foreach>
-  			</trim>
+  		from(  			
+  			<foreach collection="list" item="vo" separator=" union all ">
+  				select #{vo.size_no,jdbcType=INTEGER} size_no,#{vo.color_no,jdbcType=INTEGER} color_no from dual
+  			</foreach>  			
   		)   
   </insert>
   
@@ -115,12 +133,10 @@
   
   	insert into goods_option(goods_option_no,goods_no,option_name)
   	select goods_option_seq.nextval,#{goods_no},option_name
-  		from(
-  			<trim prefixOverrides="union all">
-	  			<foreach collection="list" item="option_name">
-	  				union all select #{option_name} option_name from dual
-	  			</foreach>
-  			</trim>
+  		from(  			
+  			<foreach collection="list" item="option_name" separator=" union all ">
+  				union all select #{option_name} option_name from dual
+  			</foreach>  			
   		)   
   </insert>
   
@@ -132,12 +148,10 @@
   
   	insert into goods_image(image_no,goods_no,image_name)
   	select image_seq.nextval,#{goods_no},image_name
-  		from(
-  			<trim prefixOverrides="union all">
-	  			<foreach collection="list" item="vo">
-	  				union all select #{vo.image_name} image_name from dual
-	  			</foreach>
-  			</trim>
+  		from(  			
+  			<foreach collection="list" item="vo" separator=" union all ">
+  				union all select #{vo.image_name} image_name from dual
+  			</foreach>  			
   		)   
   </insert>
   

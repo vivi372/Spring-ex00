@@ -10,6 +10,7 @@ import org.zerock.goods.vo.BasicSizeVO;
 import org.zerock.goods.vo.GoodsImageVO;
 import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
+import org.zerock.goods.vo.goodsSearchVO;
 
 import com.webjjang.util.page.PageObject;
 
@@ -17,9 +18,9 @@ import com.webjjang.util.page.PageObject;
 public interface GoodsMapper {
 	
 	//상품 관리 리스트 페이지 처리를 위한 전체 데이터 개수
-	public long totalRow(PageObject pageObject);
+	public long totalRow(@Param("pageObject") PageObject pageObject,@Param("vo") goodsSearchVO searchVO);
 	//상품 관리 리스트
-	public List<GoodsVO> list(PageObject pageObject);
+	public List<GoodsVO> list(@Param("pageObject") PageObject pageObject,@Param("vo") goodsSearchVO searchVO);
 	//상품 관리 조회수 증가
 	public int inc(long no);
 	//상품 관리 보기

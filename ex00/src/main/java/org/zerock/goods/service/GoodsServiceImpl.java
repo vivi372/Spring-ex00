@@ -14,6 +14,7 @@ import org.zerock.goods.vo.BasicSizeVO;
 import org.zerock.goods.vo.GoodsImageVO;
 import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
+import org.zerock.goods.vo.goodsSearchVO;
 
 import com.webjjang.util.page.PageObject;
 
@@ -33,9 +34,9 @@ public class GoodsServiceImpl implements GoodsService {
 	private GoodsMapper goodsMapper;
 	
 	@Override
-	public List<GoodsVO> list(PageObject pageObject) {		
-		pageObject.setTotalRow(goodsMapper.totalRow(pageObject));		
-		return goodsMapper.list(pageObject);		
+	public List<GoodsVO> list(PageObject pageObject,goodsSearchVO searchVO) {		
+		pageObject.setTotalRow(goodsMapper.totalRow(pageObject,searchVO));		
+		return goodsMapper.list(pageObject,searchVO);		
 	}
 	@Override
 	@Transactional

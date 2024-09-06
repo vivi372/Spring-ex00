@@ -7,6 +7,7 @@ import org.zerock.goods.vo.BasicSizeVO;
 import org.zerock.goods.vo.GoodsImageVO;
 import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
+import org.zerock.goods.vo.goodsSearchVO;
 
 import com.webjjang.util.page.PageObject;
 
@@ -16,7 +17,7 @@ import com.webjjang.util.page.PageObject;
 public interface GoodsService {	
 	
 	//상품 리스트
-	public List<GoodsVO> list(PageObject pageObject); 
+	public List<GoodsVO> list(PageObject pageObject,goodsSearchVO searchVO); 
 	//상품 상세보기
 	public GoodsVO view(long[] longs); 
 	

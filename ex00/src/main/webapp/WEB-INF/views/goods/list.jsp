@@ -23,6 +23,45 @@
 
 <script type="text/javascript">
 	$(function() {
+		//이벤트 처리
+		$("#cate_code1").change(function() {
+			let cate_code1 = $(this).val();
+			
+			
+			//중분류 가져오기
+			$.ajax({
+				type : "get", //데이터 전송 방식
+				url: "/goods/getCateMidSizeColor.do?cate_code1="+cate_code1,
+				contentType : "application/json;charset=UTF-8",
+				success: function(data) {
+					//console.log(data);
+					//중분류 가져오기
+					//catelist만 뽑아오기
+					//생성할 옵션들 태그를 저장하는 변수 선언 
+					let optionTag = `
+						<option value="">중분류</option>
+					`;
+					if(data != null) {
+						let $cateList = $(data).find("cateList");
+						//catelist 반복문 돌리기
+						$cateList.each(function() {
+							//필요한 데이터 가져오기
+							let cate_code1 = $(this).find("cate_code1").text();
+							let cate_code2 = $(this).find("cate_code2").text();
+							let cate_name = $(this).find("cate_name").text();
+							//옵션 태그 추가
+							optionTag += `<option value="\${cate_code2}">\${cate_name}</option>`;
+						});
+					}
+					//select 태그의 옵션 새로 치환
+					$("#cate_code2").html(optionTag);
+					$("#cate_code2").removeAttr("disabled");							
+				
+				}
+			});	
+		
+		});
+		
 		$(".dataRow").click(function() {
 			let no = $(this).data("no");
 			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
@@ -38,9 +77,69 @@
 		//검색 데이터 세팅		
 		$("#key").val("${(empty pageObject.key)?'t':pageObject.key}");
 		$("#perPageNum").val("${(empty pageObject.perPageNum)?'10':pageObject.perPageNum}");
-		$("#word").val("${pageObject.word}");
-		//$("#perPageNum").val("${pageObject.perPageNum}");				
+		$("#word").val("${searchVO.goods_name}");
+		$("#cate_code1").val("${searchVO.cate_code1}");
+		$("#minPrice").val("${searchVO.minPrice}");
+		$("#maxPrice").val("${searchVO.maxPrice}");
+		if(${searchVO.detailState}) {
+			$(".detailSearch").css("display","block");
+			$("#detailState").removeAttr("disabled");
+		}
+		//중분류 가져오기
+		$.ajax({
+			type : "get", //데이터 전송 방식
+			url: "/goods/getCateMidSizeColor.do?cate_code1=${searchVO.cate_code1}",
+			contentType : "application/json;charset=UTF-8",
+			success: function(data) {
+				//console.log(data);
+				//중분류 가져오기
+				//catelist만 뽑아오기
+				let $cateList = $(data).find("cateList");
+				//생성할 옵션들 태그를 저장하는 변수 선언 
+				let optionTag = `
+					<option value="">중분류</option>
+				`;
+				//catelist 반복문 돌리기
+				$cateList.each(function() {
+					//필요한 데이터 가져오기
+					let cate_code1 = $(this).find("cate_code1").text();
+					let cate_code2 = $(this).find("cate_code2").text();
+					let cate_name = $(this).find("cate_name").text();
+					//옵션 태그 추가
+					optionTag += `<option value="\${cate_code2}">\${cate_name}</option>`;
+				});
+				//select 태그의 옵션 새로 치환
+				$("#cate_code2").html(optionTag);
+				$("#cate_code2").removeAttr("disabled");		
+				
+				//중분류 검색값 세팅
+				if(${!empty searchVO.cate_code2})
+					$("#cate_code2").val("${searchVO.cate_code2}");
+			}
+		});			
 	
+		//검색 이벤트
+		$("#cate_code2, #minPrice, #maxPrice").change(function() {
+			$("#search").submit();
+		});
+		$("#reset").click(function() {
+			$("#word").val("");
+			$("#cate_code1").val("");
+			$("#cate_code2").val("");
+			$("#minPrice").val("");
+			$("#maxPrice").val("");
+			$("#search").submit();
+		});
+		
+		$("#detailSearchBtn").click(function() {			
+			if($(".detailSearch").css("display") == "none") {
+				$(".detailSearch").slideToggle();
+				$("#detailState").removeAttr("disabled");
+			} else {
+				$(".detailSearch").slideToggle();
+				$("#detailState").prop("disabled",true);
+			}
+		});
 		
 	});
 </script>
@@ -57,17 +156,8 @@
 				<div class="row">		
 					<div class="col-md-8">				
 						<div class="input-group mb-3">
-		  					<div class="input-group-prepend">    					
-		   						<select name="key" id="key" class="form-control">
-		   							<option value="t">제목</option>
-		   							<option value="c">내용</option>
-		   							<option value="w">작성자</option>
-		   							<option value="tc">제목+내용</option>
-		   							<option value="cw">내용+작성자</option>
-		   							<option value="tcw">모두</option>
-		   						</select>    					
-		  					</div>
-		 				 	<input type="text" class="form-control" placeholder="검색" id="word" name="word">
+		  					
+		 				 	<input type="text" class="form-control" placeholder="검색" id="word" name="goods_name">
 		 				 	<div class="input-group-append">
 		    					<button class="btn btn-dark" type="submit"><i class="fa fa-search"></i></button>
 		  					</div>
@@ -90,6 +180,43 @@
 		  				</div>
 					</div>	<!-- col-4 end : 한 페이지당 페이지 수 -->	
 				</div>
+				<div>
+					<button type="button" id="detailSearchBtn" class="btn btn-dark btn-sm">상세 검색</button>
+					<button type="button" id="reset" class="btn btn-secondary btn-sm">초기화</button>
+				</div>
+				<div class="detailSearch" style="display: none;">
+					<input type="hidden" value="true" id="detailState" name="detailState" disabled>
+					<label for="category">카테고리</label> 
+					<div class="form-row mb-2">			
+						<div class="col">
+							 <select class="form-control" id="cate_code1" name="cate_code1">
+							 	<option value="">대분류</option>
+							 	<c:forEach items="${category }" var="vo">
+							 		<option value="${vo.cate_code1 }">${vo.cate_name }</option>
+							 	</c:forEach>
+							 </select>		
+						 </div>
+						 <div class="col">
+							 <select class="form-control" id="cate_code2" name="cate_code2" disabled>
+							 	<!-- ajax를 이용한 중분류 option 출력 -->
+							 	<option style="display: none;" value="">중분류</option>
+							 </select>	
+						 </div>			
+					</div>
+					
+					<label for="minPrice">가격</label> 
+					<div class="form-row mb-2">			
+						<div class="col-5">
+							<input type="number" class="form-control" placeholder="최소 금액" name="minPrice" id="minPrice">
+						 </div>
+						 <div class="col-2 text-center">
+						 	<i class="fa fa-minus"></i>
+						 </div>
+						 <div class="col-5">
+							<input type="number" class="form-control" placeholder="최대 금액" name="maxPrice" id="maxPrice">
+						 </div>			
+					</div>
+				</div>
 			</form>	
 		</div>
 		<c:if test="${empty list }">
@@ -102,12 +229,12 @@
 			<div class="row my-3">
 				<!-- 이미지의 데이터가 있는 만큼 반복해서 표시하는 처리 시작 -->
 				<c:forEach items="${list }" var="vo" varStatus="vs">	
-					<!-- 줄 바꿈 처리 - 찍는 인덱스 번호가 3의 배수이면 줄바꿈을 한다. -->
-					<c:if test="${vs.index != 0 && vs.index % 3 ==0 }">
+					<!-- 줄 바꿈 처리 - 찍는 인덱스 번호가 4의 배수이면 줄바꿈을 한다. -->
+					<c:if test="${vs.index != 0 && vs.index % 4 ==0 }">
 						${"</div>" }
 						${"<div class='row my-3'>" }
 					</c:if>
-					<div class="col-md-4">
+					<div class="col-md-3">
 			    		<div class="card dataRow" data-no="${vo.goods_no }" >
 			    			<div class="imageDiv text-center align-content-center" style="height: 300px;">
 			    				<img class="card-img-top" style="height:100%; object-fit: contain;" src="${vo.image_name }" alt="Card image">

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ import org.zerock.goods.vo.BasicSizeVO;
 import org.zerock.goods.vo.GoodsImageVO;
 import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
+import org.zerock.goods.vo.goodsSearchVO;
 
 import com.webjjang.util.file.FileUtil;
 import com.webjjang.util.page.PageObject;
@@ -57,7 +59,8 @@ public class GoodsController {
 	//상품 관리 리스트
 	@GetMapping("/list.do")
 	//검색을 위한 데이터를 따로 받아야 한다.
-	public String list(Model model,HttpServletRequest request) throws Exception {
+	// @ModelAttribute - 전달받은 데이터를 model에 담아서 바로 JSP까지 보낼 때 사용
+	public String list(Model model,HttpServletRequest request,@ModelAttribute(name="searchVO") goodsSearchVO searchVO) throws Exception {
 		log.info("list()");				
 		//페이지 처리를 위한 객체 생성
 		PageObject pageObject = PageObject.getInstance(request);
@@ -66,11 +69,14 @@ public class GoodsController {
 		if(strPerPageNum == null || strPerPageNum.equals(""))
 			pageObject.setPerPageNum(8);
 		//model에 담으면 자동으로 request에 담긴다. - 차리된 데이터를 Model에 저장
-		model.addAttribute("list", service.list(pageObject));	
+		model.addAttribute("list", service.list(pageObject,searchVO));	
 		//전체 페이지 세팅후 값을 보기 위해서
 		log.info(pageObject);
-		model.addAttribute("pageObject", pageObject);	
+		model.addAttribute("pageObject", pageObject);
+		//대분류 카테고리 가져오기
+		model.addAttribute("category",cateService.list(0));
 		//검색에 대한 정보도 넘겨야한다.
+		//model.addAttribute("searchVO",searchVO);
 		
 		
 		return "goods/list";
@@ -94,17 +100,21 @@ public class GoodsController {
 	//상품 관리 글 등록 폼 중분류 카테고리,사이즈,컬러 가져오기
 	@GetMapping(value = "/getCateMidSizeColor.do", produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public @ResponseBody Map<String, Object> getCateMidSizeColor(Integer cate_code1) {
+		Map<String, Object> map = null;
 		
-		List<CategoryVO> cateList = cateService.list(cate_code1);
-		List<BasicSizeVO> sizeList = service.getSizeList(cate_code1);
-		List<BasicColorVO> colorList = service.getColorList(cate_code1);
-	
+		if(cate_code1 != null) {
+			List<CategoryVO> cateList = cateService.list(cate_code1);
+			List<BasicSizeVO> sizeList = service.getSizeList(cate_code1);
+			List<BasicColorVO> colorList = service.getColorList(cate_code1);			
+			
+			map = new HashMap<String, Object>();
+			
+			map.put("cateList", cateList);
+			map.put("sizeList", sizeList);
+			map.put("colorList", colorList);
+			
+		}
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("cateList", cateList);
-		map.put("sizeList", sizeList);
-		map.put("colorList", colorList);
 		
 		return map;
 	}
@@ -114,7 +124,9 @@ public class GoodsController {
 	//@RequestParam을 사용한 경우 null인 경우 오류가 난다. required = false가 있어야 한다.
 	public String write(GoodsVO vo,@RequestParam(required = false) ArrayList<String> option_name,MultipartFile image_name_file,MultipartFile detail_image_name_file,
 			@RequestParam ArrayList<MultipartFile> image_names,int perPageNum,RedirectAttributes rttr,
-			@RequestParam(required = false) ArrayList<Long> size_no,@RequestParam(required = false) ArrayList<Long> color_no,HttpServletRequest request) throws Exception {
+			@RequestParam(required = false) ArrayList<Long> size_no,@RequestParam(required = false) ArrayList<Long> color_no,
+			HttpServletRequest request) throws Exception {
+		//받아온 데이터 확인
 		log.info("write.do - vo:"+vo);
 		log.info("write.do - option_name:"+option_name);
 		log.info("write.do - iamge_name:"+image_name_file.getOriginalFilename());
@@ -129,7 +141,7 @@ public class GoodsController {
 		
 		//상품 사이즈 컬러 리스트 만들기 컬러 사이즈를 입력 받았을때만 실행
 		List<GoodsSizeColorVO> sizeColorList = null;
-		//사이즈 컬러 둘다 선택한 경우
+		//사이즈 컬러 둘다 선택한 경우 사이즈수 * 컬러수 만큼 생성
 		if(size_no != null && color_no != null) {
 			sizeColorList = new ArrayList<GoodsSizeColorVO>();
 			for(Long size:size_no) {				
@@ -227,6 +239,11 @@ public class GoodsController {
 		}
 	}
 	
+	/**
+	 * MultipartFile 리스트가 비어있는지 확인하는 함수
+	 * @param list MultipartFile 리스트
+	 * @return 비어있으면 true 비어있지않으면 false 리턴
+	 */
 	private boolean isEmpty(ArrayList<MultipartFile> list) {
 		if(list == null) return true;
 		

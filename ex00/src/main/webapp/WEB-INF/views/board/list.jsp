@@ -39,8 +39,19 @@
 		$("#key").val("${(empty pageObject.key)?'t':pageObject.key}");
 		$("#perPageNum").val("${(empty pageObject.perPageNum)?'10':pageObject.perPageNum}");
 		$("#word").val("${pageObject.word}");
-		//$("#perPageNum").val("${pageObject.perPageNum}");				
-	
+		//$("#perPageNum").val("${pageObject.perPageNum}");			
+		
+		//스크롤 이동시 수직 스크롤의 위치를 알려주는 이벤트
+// 		$(window).scroll(function() {
+// 			let scrollValue =  $(document).scrollTop();
+// 			console.log(scrollValue);
+// 		});
+		//원하는 위치로 스크롤 이동 시켜주는 이벤트
+		$("#scrollBtn").click(function() {
+			$('html, body').animate({
+			    scrollTop: 900
+			}, 1000); // 문서 상단에서 900픽셀 위치로 이동			
+		});
 		
 	});
 </script>
@@ -48,7 +59,7 @@
 </head>
 <body>
 <div class="container">
-	
+	<button id="scrollBtn">이동</button>
 	<div class="card">
 		<div class="card-header">
 			<h2>일반 게시판 리스트</h2>
