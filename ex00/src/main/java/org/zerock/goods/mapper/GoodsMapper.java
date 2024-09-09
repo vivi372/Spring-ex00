@@ -18,7 +18,7 @@ import com.webjjang.util.page.PageObject;
 public interface GoodsMapper {
 	
 	//상품 관리 리스트 페이지 처리를 위한 전체 데이터 개수
-	public long totalRow(@Param("pageObject") PageObject pageObject,@Param("vo") goodsSearchVO searchVO);
+	public long totalRow(@Param("vo") goodsSearchVO searchVO);
 	//상품 관리 리스트
 	public List<GoodsVO> list(@Param("pageObject") PageObject pageObject,@Param("vo") goodsSearchVO searchVO);
 	//상품 관리 조회수 증가

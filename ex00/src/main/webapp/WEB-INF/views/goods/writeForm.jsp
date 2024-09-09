@@ -135,14 +135,34 @@
 			}
 		});
 		
-		$("#discount, #discount_rate").keydown(function() {
+		//판매가 계산 이벤트
+		$("#price ,#discount, #discount_rate").keyup(function() {
 			let discountInputName = $(this).attr("name");
-			console.log(discountInputName);
+			//console.log(discountInputName);
+			let price = $("#price").val();
 			
 			if(discountInputName == 'discount') {
 				$("#discount_rate").val("");
-			} else {
+				let sale_price = price - (+ $(this).val());
+				$("#sale_price").text(sale_price);
+			} else if(discountInputName == 'discount_rate') {
+				let discount_rate = Number($(this).val());
 				$("#discount").val("");
+				let sale_price = Math.floor((price - (price*discount_rate/100))/10)*10;
+				$("#sale_price").text(sale_price);
+			} else {
+				$("#sale_price").text(price);
+				let discount_rate = $("#discount_rate").val();
+				let discount = $("#discount").val();
+				let sale_price;
+				if(discount != ''){
+					sale_price = price - (+ discount);
+					$("#sale_price").text(sale_price);
+				} else if(discount_rate != '') {
+					let sale_price = Math.floor((price - (price*discount_rate/100))/10)*10;
+					$("#sale_price").text(sale_price);
+				} else $("#sale_price").text(price);
+				
 			}
 		});
 		
@@ -306,7 +326,11 @@
 					<label for="discount_rate">할인율</label> 
 					<input type="text" class="form-control" id="discount_rate" name="discount_rate">
 				</div>		
-			</div>		
+			</div>	
+			<div>
+				판매가 : <span id="sale_price"></span>원
+			</div>
+				
 			<div class="form-group">
 				<label for="delivery_charge">배송비</label> 
 				<input type="text" class="form-control" required placeholder="배송비 입력" id="delivery_charge" name="delivery_charge">

@@ -5,65 +5,82 @@
 <mapper namespace="org.zerock.goods.mapper.GoodsMapper">
   
   <!-- 전체 글수 구하기 -->
-  <select id="totalRow" resultType="long">
-  	select count(*) from goods g, price p where 1=1
-  	<!-- 검색을 달아야 한다. -->
-  	<include refid="search"></include>   	
-  	<include refid="cateSearch"></include>  
-  	<include refid="priceSearch"></include>   	
-  	and (p.goods_no = g.goods_no)	
+  <select id="totalRow" resultType="long">  	
+	  	select count(*) 	  		
+		 from goods g,
+		 (
+              select  goods_no, nvl(price - discount,trunc(price - price*(nvl(discount_rate,0)/100),-1)) sale_price from price 
+              where trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
+            ) sp
+		  where 1=1
+	  	<!-- 검색을 달아야 한다. -->
+		<include refid="search"></include>   	
+		<include refid="cateSearch"></include>  
+		<include refid="priceSearch"></include> 
+	  	and (sp.goods_no = g.goods_no)    	
   </select>
   
   <!-- 상품 관리 리스트 -->
   <select id="list" resultType="org.zerock.goods.vo.GoodsVO">
   
-  select cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+  select cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate,sale_price
   	from(
 	  	select rownum rnum,
-	  	cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate
+	  	cate_code1,cate_code2,goods_no,goods_name,image_name,hit,price,discount,discount_rate,delivery_charge,saved_rate,sale_price
 	  	from (
 	    	SELECT 
-	    	g.cate_code1,g.cate_code2,g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate
-	    	FROM goods g, price p 
+	    	g.cate_code1,g.cate_code2,g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate,sale_price
+	    	FROM goods g, price p,  
+	    	(
+                 select  goods_no, nvl(price - discount,trunc(price - price*(nvl(discount_rate,0)/100),-1)) sale_price from price 
+                 where trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
+            ) sp
 	    	where (<!-- 일반 조건 -->
 	    	<!-- 현재 판매되고 있는 물건 - 가격 정보가 현재 가격으로 존재 -->
 	    	trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
 	    	<!-- 검색을 달아야 한다. -->	 
 	    	<include refid="search"></include>   
-	    	<include refid="cateSearch"></include>   
-	    	<include refid="priceSearch"></include>   
+	    	<include refid="cateSearch"></include> 
+	    	<include refid="priceSearch"></include>  	    	   
 	    	)<!-- 조인 조건 -->
-	    	and (p.goods_no = g.goods_no)	
+	    	and (p.goods_no = g.goods_no) and (sp.goods_no = g.goods_no)
 	    	order by goods_no desc
-	    )
+	    ) 
 	) where rnum between #{pageObject.startRow} and #{pageObject.endRow}
 	
   </select>
   <!-- 상품 관리 리스트의 검색 처리 -->
+  <!-- 상품 이름 검색 -->
   <sql id="search">  	
-  	<if test="vo.goods_name != null and vo.goods_name == ''.toString()">
+  	
+  	<if test="vo.goods_name != null and vo.goods_name != ''.toString()">
   		and (goods_name like '%' || #{vo.goods_name} || '%')  	
   	</if>  	
   </sql>
-  
+  <!-- 카테고리 검색 -->
   <sql id="cateSearch">
+ 	<!-- 대분류 검색 -->
   	<if test="vo.cate_code1 != null">
   		and (cate_code1 = #{vo.cate_code1}) 
   	</if>
+  	<!-- 소분류 검색 -->
   	<if test="vo.cate_code2 != null">	
   		and (cate_code2=#{vo.cate_code2})
   	</if>
   </sql>
-  
-  <sql id="priceSearch">  	
+  <!-- 가격 검색 -->
+  <sql id="priceSearch"> 
+  	<!-- 최소가 검색 --> 	
   	<if test="vo.minPrice != null">
   		<![CDATA[
-  			and (price >= #{vo.minPrice}) 
+  			and		
+  			( sale_price >= #{vo.minPrice}) 
   		]]>
   	</if>
+  	<!-- 최대가 검색 --> 	
   	<if test="vo.maxPrice != null">	
  		<![CDATA[
-  			and (price <= #{vo.maxPrice})
+  			and (sale_price <= #{vo.maxPrice})
   		]]>
   	</if>
   </sql>
@@ -135,7 +152,7 @@
   	select goods_option_seq.nextval,#{goods_no},option_name
   		from(  			
   			<foreach collection="list" item="option_name" separator=" union all ">
-  				union all select #{option_name} option_name from dual
+  				select #{option_name} option_name from dual
   			</foreach>  			
   		)   
   </insert>
@@ -150,7 +167,7 @@
   	select image_seq.nextval,#{goods_no},image_name
   		from(  			
   			<foreach collection="list" item="vo" separator=" union all ">
-  				union all select #{vo.image_name} image_name from dual
+  				select #{vo.image_name} image_name from dual
   			</foreach>  			
   		)   
   </insert>

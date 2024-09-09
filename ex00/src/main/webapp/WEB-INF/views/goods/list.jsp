@@ -26,40 +26,10 @@
 		//이벤트 처리
 		$("#cate_code1").change(function() {
 			let cate_code1 = $(this).val();
-			
-			
-			//중분류 가져오기
-			$.ajax({
-				type : "get", //데이터 전송 방식
-				url: "/goods/getCateMidSizeColor.do?cate_code1="+cate_code1,
-				contentType : "application/json;charset=UTF-8",
-				success: function(data) {
-					//console.log(data);
-					//중분류 가져오기
-					//catelist만 뽑아오기
-					//생성할 옵션들 태그를 저장하는 변수 선언 
-					let optionTag = `
-						<option value="">중분류</option>
-					`;
-					if(data != null) {
-						let $cateList = $(data).find("cateList");
-						//catelist 반복문 돌리기
-						$cateList.each(function() {
-							//필요한 데이터 가져오기
-							let cate_code1 = $(this).find("cate_code1").text();
-							let cate_code2 = $(this).find("cate_code2").text();
-							let cate_name = $(this).find("cate_name").text();
-							//옵션 태그 추가
-							optionTag += `<option value="\${cate_code2}">\${cate_name}</option>`;
-						});
-					}
-					//select 태그의 옵션 새로 치환
-					$("#cate_code2").html(optionTag);
-					$("#cate_code2").removeAttr("disabled");							
-				
-				}
-			});	
-		
+			if(cate_code1 == ""){
+				$("#cate_code2").val("");
+			}
+			$("#search").submit();		
 		});
 		
 		$(".dataRow").click(function() {
@@ -76,7 +46,7 @@
 		});			
 		//검색 데이터 세팅		
 		$("#key").val("${(empty pageObject.key)?'t':pageObject.key}");
-		$("#perPageNum").val("${(empty pageObject.perPageNum)?'10':pageObject.perPageNum}");
+		$("#perPageNum").val("${pageObject.perPageNum}");
 		$("#word").val("${searchVO.goods_name}");
 		$("#cate_code1").val("${searchVO.cate_code1}");
 		$("#minPrice").val("${searchVO.minPrice}");
@@ -97,7 +67,7 @@
 				let $cateList = $(data).find("cateList");
 				//생성할 옵션들 태그를 저장하는 변수 선언 
 				let optionTag = `
-					<option value="">중분류</option>
+					<option value="" selected>중분류</option>
 				`;
 				//catelist 반복문 돌리기
 				$cateList.each(function() {
@@ -118,6 +88,11 @@
 			}
 		});			
 	
+		$("#minPrice,#maxPrice").on("input",function() {
+			if($(this).val()<0)
+				$(this).val("");
+		});
+		
 		//검색 이벤트
 		$("#cate_code2, #minPrice, #maxPrice").change(function() {
 			$("#search").submit();
@@ -184,7 +159,7 @@
 					<button type="button" id="detailSearchBtn" class="btn btn-dark btn-sm">상세 검색</button>
 					<button type="button" id="reset" class="btn btn-secondary btn-sm">초기화</button>
 				</div>
-				<div class="detailSearch" style="display: none;">
+				<div class="detailSearch mt-2" style="display: none;">
 					<input type="hidden" value="true" id="detailState" name="detailState" disabled>
 					<label for="category">카테고리</label> 
 					<div class="form-row mb-2">			

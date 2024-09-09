@@ -31,17 +31,21 @@ public class GoodsVO {
 	private Date sale_start_date; // 값이 안들어오면 null로 ""로 처리해서 기본값으로
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date sale_end_date; // 값이 안들어오면 null로 ""로 처리해서 기본값으로
+	private Integer sale_price;//판매가
 	
 	//판매가 getter 만들기
-	public Integer getSale_price() {
+	public Integer getSale_price2() {
 		//할인가가 있는 경우
 		if(discount != null && discount != 0 ) {
-			return price-discount;
-			
+			return price-discount;			
 		}
 		//할인율이 있는 경우 10원 미만 단위 절삭
-		else {	
-			return (price - (int) ((float)price*((float)discount_rate/100)))/10 * 10;
+		else {
+			if(discount_rate == null) {
+				return price;
+			} else {
+				return (price - (int) ((float)price*((float)discount_rate/100)))/10 * 10;				
+			}
 		}
 	}
 }

@@ -35,7 +35,7 @@ public class GoodsServiceImpl implements GoodsService {
 	
 	@Override
 	public List<GoodsVO> list(PageObject pageObject,goodsSearchVO searchVO) {		
-		pageObject.setTotalRow(goodsMapper.totalRow(pageObject,searchVO));		
+		pageObject.setTotalRow(goodsMapper.totalRow(searchVO));		
 		return goodsMapper.list(pageObject,searchVO);		
 	}
 	@Override
