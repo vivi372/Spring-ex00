@@ -2,6 +2,7 @@ package org.zerock.goods.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -83,10 +84,41 @@ public class GoodsController {
 	}
 	//상품 관리 상세보기
 	@GetMapping("/view.do")
-	public String view(long no,long inc,Model model) {
-		log.info("view()");		
-		long[] longs = {no,inc};
-		model.addAttribute("vo",service.view(longs));
+	public String view(long goods_no,long inc,Model model,
+			@ModelAttribute(name="searchVO") goodsSearchVO searchVO) {
+		log.info("view() - "+goods_no+" "+inc);	
+		
+		Map<String, Object> map = service.view(goods_no,inc);
+		
+		List<GoodsSizeColorVO> sizeColorList = (List<GoodsSizeColorVO>) map.get("sizeColorList");
+		
+		List<GoodsSizeColorVO> sizeList = new ArrayList<GoodsSizeColorVO>();
+		List<GoodsSizeColorVO> colorList = new ArrayList<GoodsSizeColorVO>();
+		for(GoodsSizeColorVO vo:sizeColorList) {
+			GoodsSizeColorVO size = new GoodsSizeColorVO();
+			GoodsSizeColorVO color = new GoodsSizeColorVO();
+			
+			size.setSize_no(vo.getSize_no());
+			size.setSize_name(vo.getSize_name());
+			color.setColor_no(vo.getColor_no());
+			color.setColor_name(vo.getColor_name());
+			
+			sizeList.add(size);
+			colorList.add(color);
+		}
+		
+		
+		//상품 상세 정보 가져오기 - 현재 판매 가격 포함
+		model.addAttribute("goodsVO",map.get("goodsVO"));
+		//사이즈와 색상 리스트
+		model.addAttribute("sizeColorList",map.get("sizeColorList"));
+		model.addAttribute("sizeList",new LinkedHashSet<>(sizeList));
+		model.addAttribute("colorList",new LinkedHashSet<>(colorList));
+		//옵션 리스트
+		model.addAttribute("optionList",map.get("optionList"));
+		//첨부 이미지 리스트
+		model.addAttribute("imageList",map.get("imageList"));
+		
 		return "goods/view";
 	}
 	//상품 관리 글 등록 폼
@@ -204,7 +236,7 @@ public class GoodsController {
 	@GetMapping("/updateForm.do")
 	public String updateForm(long no,Model model) {
 		log.info("updateForm.do");
-		model.addAttribute("vo",service.view(new long[] {no,0}));
+		model.addAttribute("vo",service.view(no,0));
 		
 		return "goods/updateForm";
 	}

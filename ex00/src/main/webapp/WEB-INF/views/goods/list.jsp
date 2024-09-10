@@ -23,6 +23,8 @@
 
 <script type="text/javascript">
 	$(function() {
+		
+		
 		//이벤트 처리
 		$("#cate_code1").change(function() {
 			let cate_code1 = $(this).val();
@@ -34,7 +36,7 @@
 		
 		$(".dataRow").click(function() {
 			let no = $(this).data("no");
-			location = "/board/view.do?no="+no+"&inc=1&${pageObject.pageQuery}";
+			location = "/goods/view.do?goods_no="+no+"&inc=1&${pageObject.pageQuery}&${searchVO.query}";
 		});	
 			
 					

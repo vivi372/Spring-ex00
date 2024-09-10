@@ -1,6 +1,8 @@
 package org.zerock.goods.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -40,12 +42,18 @@ public class GoodsServiceImpl implements GoodsService {
 	}
 	@Override
 	@Transactional
-	public GoodsVO view(long[] longs) {		
-		long no = longs[0];
-		if(longs[1] == 1) {
-			goodsMapper.inc(no);			
+	public Map<String, Object> view(long goods_no,long inc) {	
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		if(inc == 1) {
+			goodsMapper.inc(goods_no);			
 		}
-		return goodsMapper.view(no);
+		map.put("goodsVO", goodsMapper.view(goods_no));
+		map.put("sizeColorList", goodsMapper.sizeColorview(goods_no));
+		map.put("optionList", goodsMapper.optionView(goods_no));
+		map.put("imageList", goodsMapper.imageView(goods_no));
+		
+		return map;
 	}
 	
 	//@Transactional  - insert 2번 성공을 해야 commit 됨. 한개라도 오류가 나면 rollback

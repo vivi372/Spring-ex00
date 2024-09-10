@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.zerock.goods.vo.BasicColorVO;
 import org.zerock.goods.vo.BasicSizeVO;
 import org.zerock.goods.vo.GoodsImageVO;
+import org.zerock.goods.vo.GoodsOptVO;
 import org.zerock.goods.vo.GoodsSizeColorVO;
 import org.zerock.goods.vo.GoodsVO;
 import org.zerock.goods.vo.goodsSearchVO;
@@ -22,9 +23,15 @@ public interface GoodsMapper {
 	//상품 관리 리스트
 	public List<GoodsVO> list(@Param("pageObject") PageObject pageObject,@Param("vo") goodsSearchVO searchVO);
 	//상품 관리 조회수 증가
-	public int inc(long no);
+	public int inc(@Param("goods_no") long goods_no);
 	//상품 관리 보기
-	public GoodsVO view(long no);
+	public GoodsVO view(@Param("goods_no") long goods_no);
+	//상품 관리 보기
+	public List<GoodsSizeColorVO> sizeColorview(@Param("goods_no") long goods_no);
+	//상품 관리 보기
+	public List<GoodsOptVO> optionView(@Param("goods_no") long goods_no);
+	//상품 관리 보기
+	public List<GoodsImageVO> imageView(@Param("goods_no") long goods_no);
 	//상품 관리 상품 등록
 	public Integer goodsWrite(GoodsVO vo);
 	//상품 관리 상품 가격 등록

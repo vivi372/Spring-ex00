@@ -1,6 +1,7 @@
 package org.zerock.goods.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.zerock.goods.vo.BasicColorVO;
 import org.zerock.goods.vo.BasicSizeVO;
@@ -19,7 +20,7 @@ public interface GoodsService {
 	//상품 리스트
 	public List<GoodsVO> list(PageObject pageObject,goodsSearchVO searchVO); 
 	//상품 상세보기
-	public GoodsVO view(long[] longs); 
+	public Map<String, Object> view(long goods_no,long inc); 
 	
 	//상품 등록
 	public int write(GoodsVO vo,List<String> option_name,List<GoodsImageVO> imageList,List<GoodsSizeColorVO> sizeColorList); 

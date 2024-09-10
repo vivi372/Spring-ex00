@@ -33,6 +33,14 @@ public class GoodsVO {
 	private Date sale_end_date; // 값이 안들어오면 null로 ""로 처리해서 기본값으로
 	private Integer sale_price;//판매가
 	
+	public Integer getDiscountRate() {
+		if(discount_rate == null && discount == null) return null;
+		if(discount_rate != null && discount_rate != 0)
+			return discount_rate;
+		else 
+			return (int) (((float)discount/price)*100);
+	}
+	
 	//판매가 getter 만들기
 	public Integer getSale_price2() {
 		//할인가가 있는 경우

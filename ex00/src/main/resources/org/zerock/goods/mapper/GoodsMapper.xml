@@ -30,6 +30,7 @@
 	  	from (
 	    	SELECT 
 	    	g.cate_code1,g.cate_code2,g.goods_no,g.goods_name,g.image_name,g.hit,p.price,p.discount,p.discount_rate,p.delivery_charge,p.saved_rate,sale_price
+	    	<!-- from 뒤에 사용할수 있는거 1.table 2. select 3.view table -->
 	    	FROM goods g, price p,  
 	    	(
                  select  goods_no, nvl(price - discount,trunc(price - price*(nvl(discount_rate,0)/100),-1)) sale_price from price 
@@ -88,11 +89,42 @@
   <!-- 상품 관리 조회수 증가 -->
   <!-- #{obj} 1.변수의 이름, 2.vo의 getter 이름, 3. Map의 Key -->
   <update id="inc">
-  	update goods set hit=hit+1 where no = #{no}
+  	update goods set hit=hit+1 where goods_no = #{goods_no}
   </update>
   <!-- 상품 관리 글 보기 -->
   <select id="view" resultType="org.zerock.goods.vo.GoodsVO">
-    SELECT no,title,content,writer,writeDate,hit FROM goods where no = #{no}
+    SELECT 
+	    	g.cate_code1,g.cate_code2,g.goods_no,g.goods_name,
+	    	g.image_name,g.detail_image_name,g.company,g.product_date,
+	    	g.hit,g.content,p.price,p.discount,	
+	    	p.discount_rate,p.delivery_charge,
+	    	p.saved_rate,sale_price,c.cate_name
+	    	FROM goods g, price p,  category c,
+	    	(
+                 select  goods_no, nvl(price - discount,trunc(price - price*(nvl(discount_rate,0)/100),-1)) sale_price from price 
+                 where trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)
+            ) sp
+	    	where g.goods_no = #{goods_no} and ( 
+	    	<!-- 현재 판매되고 있는 물건 - 가격 정보가 현재 가격으로 존재 -->
+	    	trunc(sysdate) between trunc(sale_start_date) and trunc(sale_end_date)	    		    	   
+	    	)<!-- 조인 조건 -->
+	    	and (p.goods_no = g.goods_no) and (sp.goods_no = g.goods_no) and (g.cate_code1 = c.cate_code1) and (c.cate_code2 = g.cate_code2)
+	    	
+  </select>
+  
+  <select id="sizeColorview" resultType="org.zerock.goods.vo.GoodsSizeColorVO">
+  	SELECT 
+  		sc.goods_sizeColor_no,sc.goods_no,sc.size_no,s.size_name,sc.color_no,c.color_name from goods_sizecolor sc,basic_color c,basic_size s
+  	where sc.goods_no = #{goods_no}
+  	and (sc.size_no = s.size_no(+)) and (sc.color_no = c.color_no(+))
+  </select>
+  
+  <select id="optionView" resultType="org.zerock.goods.vo.GoodsOptVO">
+  	SELECT goods_option_no,goods_no,option_name from goods_option where goods_no = #{goods_no}
+  </select>
+  
+   <select id="imageView" resultType="org.zerock.goods.vo.GoodsImageVO">
+  	SELECT image_no,goods_no,image_name from goods_image where goods_no = #{goods_no}
   </select>
   
   
